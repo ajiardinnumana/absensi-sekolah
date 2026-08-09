@@ -313,13 +313,15 @@
     script.id = "absenApi";
 
 
-    script.src =
-      GAS_URL +
-      "?aksi=absen" +
-      "&kode=" +
-      encodeURIComponent(kode) +
-      "&callback=" +
-      callbackName;
+  script.src =
+  GAS_URL +
+  "?aksi=absen" +
+  "&kode=" +
+  encodeURIComponent(kode) +
+  "&idPetugas=" +
+  encodeURIComponent(petugas.idPetugas) +
+  "&callback=" +
+  callbackName;
 
 
     document.body.appendChild(script);
