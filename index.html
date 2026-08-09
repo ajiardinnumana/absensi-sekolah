@@ -95,10 +95,66 @@
   <!-- ========================= -->
 
   <div id="scannerArea">
+    <div id="manualArea" style="display:none;">
+
+  <h2>📝 Absen Manual</h2>
+
+  <p id="manualPetugas"></p>
+
+  <input
+    type="text"
+    id="manualKode"
+    placeholder="Masukkan ID siswa, contoh S003"
+  >
+
+  <br>
+
+  <button onclick="simpanManual('SAKIT')">
+    SAKIT
+  </button>
+
+  <button onclick="simpanManual('IZIN')">
+    IZIN
+  </button>
+
+  <br><br>
+
+  <button onclick="simpanManual('KEGIATAN')">
+    KEGIATAN SEKOLAH
+  </button>
+
+  <br><br>
+
+  <input
+    type="text"
+    id="manualKeterangan"
+    placeholder="Keterangan (opsional)"
+  >
+
+  <div id="manualHasil"></div>
+
+  <br>
+
+  <button onclick="tampilkanScanner()">
+    ← KEMBALI KE SCANNER
+  </button>
+
+</div>
 
     <h2>📷 Scanner Absensi</h2>
 
     <div id="petugasInfo"></div>
+    <div id="menuArea">
+
+  <button onclick="tampilkanScanner()">
+    📷 SCAN ABSEN
+  </button>
+
+  <button onclick="tampilkanManual()">
+    📝 ABSEN MANUAL
+  </button>
+
+</div>
 
     <div id="reader"></div>
 
@@ -218,7 +274,147 @@
 
     document.body.appendChild(script);
   }
+function tampilkanManual() {
 
+  document.getElementById("scannerArea").style.display =
+    "none";
+
+  document.getElementById("manualArea").style.display =
+    "block";
+
+  document.getElementById("manualPetugas").innerHTML =
+    "<b>Petugas:</b> " +
+    petugas.nama +
+    " (" +
+    petugas.idPetugas +
+    ")";
+
+  document.getElementById("manualHasil").innerHTML =
+    "";
+
+}
+
+  function tampilkanScanner() {
+
+  document.getElementById("manualArea").style.display =
+    "none";
+
+  document.getElementById("scannerArea").style.display =
+    "block";
+
+  document.getElementById("manualHasil").innerHTML =
+    "";
+
+  mulaiScanner();
+
+}
+  function simpanManual(status) {
+
+  const kode =
+    document.getElementById("manualKode").value.trim();
+
+  const keterangan =
+    document.getElementById("manualKeterangan").value.trim();
+
+  if (!kode) {
+
+    document.getElementById("manualHasil").innerHTML =
+      "⚠️ Masukkan ID siswa terlebih dahulu.";
+
+    return;
+  }
+
+  document.getElementById("manualHasil").innerHTML =
+    "Menyimpan...";
+
+
+  const callbackName =
+    "manualCallback" + Date.now();
+
+
+  window[callbackName] = function(data) {
+
+    if (data.berhasil === true) {
+
+      document.getElementById("manualHasil").innerHTML =
+
+        "<b>✓ BERHASIL</b><br><br>" +
+
+        "Siswa: <b>" +
+        data.nama +
+        "</b><br>" +
+
+        "ID: " +
+        data.idSiswa +
+        "<br>" +
+
+        "Mode: " +
+        data.mode +
+        "<br>" +
+
+        "Status: <b>" +
+        data.status +
+        "</b><br>" +
+
+        "Petugas: " +
+        data.idPetugas;
+
+      document.getElementById("manualKode").value = "";
+
+      document.getElementById("manualKeterangan").value = "";
+
+    } else {
+
+      document.getElementById("manualHasil").innerHTML =
+
+        "<b>❌ GAGAL</b><br><br>" +
+
+        (data.pesan ||
+        "Terjadi kesalahan.");
+    }
+
+
+    delete window[callbackName];
+
+
+    const script =
+      document.getElementById("manualApi");
+
+    if (script) {
+      script.remove();
+    }
+
+  };
+
+
+  const script =
+    document.createElement("script");
+
+  script.id = "manualApi";
+
+
+  script.src =
+    GAS_URL +
+    "?aksi=manual" +
+    "&kode=" +
+    encodeURIComponent(kode) +
+    "&status=" +
+    encodeURIComponent(status) +
+    "&idPetugas=" +
+    encodeURIComponent(
+      petugas.idPetugas
+    ) +
+    "&keterangan=" +
+    encodeURIComponent(
+      keterangan
+    ) +
+    "&callback=" +
+    callbackName;
+
+
+  document.body.appendChild(script);
+
+}
 
   // =====================================================
   // SCAN BERHASIL
