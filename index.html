@@ -35,6 +35,7 @@
       padding: 15px;
       background: #f1f1f1;
       border-radius: 10px;
+      min-height: 40px;
     }
   </style>
 </head>
@@ -45,104 +46,161 @@
 
   <h2>📷 Absensi Sekolah</h2>
 
-  <p>Uji coba scanner barcode</p>
+  <p>Scanner barcode siswa</p>
 
   <div id="reader"></div>
 
   <div id="hasil">
-    Belum ada scan.
+    Siap melakukan scan.
   </div>
 
 </div>
 
 <script>
 
- function berhasilScan(kode) {
+  // =====================================================
+  // URL WEB APP GOOGLE APPS SCRIPT
+  // =====================================================
 
-  document.getElementById("hasil").innerHTML =
-    "<b>Barcode terbaca!</b><br><br>" +
-    "Kode: " + kode +
-    "<br><br>" +
-    "Mencatat kehadiran...";
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbxSXinXPPm7qIl_5J99eMKfsHEo-nCZ8MWI-KNt0KsnR4W7mTL-uE4dagGneVg3c_aX/exec";
 
-  catatKehadiran(kode);
-}
+
+  // =====================================================
+  // SAAT QR BERHASIL DIBACA
+  // =====================================================
+
+  function berhasilScan(kode) {
+
+    document.getElementById("hasil").innerHTML =
+      "<b>Barcode terbaca!</b><br><br>" +
+      "Kode: " + kode +
+      "<br><br>" +
+      "Mencatat kehadiran...";
+
+    catatKehadiran(kode);
+  }
+
+
+  // =====================================================
+  // KIRIM KODE KE GAS
+  // =====================================================
 
   function catatKehadiran(kode) {
 
-  const callbackName =
-    "callbackAbsen" + Date.now();
+    const callbackName =
+      "callbackAbsen" + Date.now();
 
-  window[callbackName] = function(data) {
+    window[callbackName] = function(data) {
 
-    if (data.berhasil) {
+      if (data.berhasil === true) {
 
-      document.getElementById("hasil").innerHTML =
-        "<b>✓ ABSENSI BERHASIL</b><br><br>" +
+        document.getElementById("hasil").innerHTML =
+          "<b>✓ ABSENSI BERHASIL</b><br><br>" +
+          "<strong>" + data.nama + "</strong><br>" +
+          data.tingkat + " - " +
+          data.jurusan + "<br>" +
+          data.kelas + "<br><br>" +
+          "Jam: <b>" + data.jam + "</b><br>" +
+          "Status: <b>" + data.status + "</b><br>" +
+          "Apel: <b>" + data.apel + "</b>";
 
-        "<strong>" + data.nama + "</strong><br>" +
+      } else if (data.sudahAbsen === true) {
 
-        data.tingkat + " - " +
-        data.jurusan + "<br>" +
+        document.getElementById("hasil").innerHTML =
+          "<b>⚠ SUDAH ABSEN</b><br><br>" +
+          "<strong>" + data.nama + "</strong><br>" +
+          "Siswa sudah melakukan absensi hari ini.";
 
-        data.kelas + "<br><br>" +
+      } else {
 
-        "Jam: <b>" + data.jam + "</b><br>" +
+        document.getElementById("hasil").innerHTML =
+          "<b>❌ GAGAL</b><br><br>" +
+          (data.pesan || "Terjadi kesalahan.");
+      }
 
-        "Status: <b>" +
-        data.status +
-        "</b><br>" +
+      delete window[callbackName];
 
-        "Apel: <b>" +
-        data.apel +
-        "</b>";
+      const script =
+        document.getElementById("gasApi");
 
-    } else if (data.sudahAbsen) {
+      if (script) {
+        script.remove();
+      }
 
-      document.getElementById("hasil").innerHTML =
-        "<b>⚠ SUDAH ABSEN</b><br><br>" +
+      setTimeout(function() {
+        mulaiScanner();
+      }, 3000);
+    };
 
-        "<strong>" + data.nama + "</strong><br>" +
-
-        "Siswa sudah melakukan absensi hari ini.";
-
-    } else {
-
-      document.getElementById("hasil").innerHTML =
-        "<b>❌ GAGAL</b><br><br>" +
-        data.pesan;
-    }
-
-    delete window[callbackName];
 
     const script =
-      document.getElementById("gasApi");
+      document.createElement("script");
 
-    if (script) {
-      script.remove();
-    }
+    script.id = "gasApi";
 
-    setTimeout(function() {
-      mulaiScanner();
-    }, 3000);
-  };
+    script.src =
+      GAS_URL +
+      "?aksi=absen" +
+      "&kode=" +
+      encodeURIComponent(kode) +
+      "&callback=" +
+      callbackName;
+
+    document.body.appendChild(script);
+  }
 
 
-  const script =
-    document.createElement("script");
+  // =====================================================
+  // ERROR PEMBACAAN QR
+  // =====================================================
 
-  script.id = "gasApi";
+  function gagalScan(error) {
+    // Tidak perlu menampilkan error setiap frame.
+  }
 
-  script.src =
-    GAS_URL +
-    "?aksi=absen" +
-    "&kode=" +
-    encodeURIComponent(kode) +
-    "&callback=" +
-    callbackName;
 
-  document.body.appendChild(script);
-}
+  // =====================================================
+  // MULAI KAMERA
+  // =====================================================
+
+  function mulaiScanner() {
+
+    document.getElementById("reader").innerHTML = "";
+
+    const scanner =
+      new Html5QrcodeScanner(
+        "reader",
+        {
+          fps: 10,
+
+          qrbox: {
+            width: 250,
+            height: 150
+          }
+        },
+
+        false
+      );
+
+    scanner.render(
+      function(kode) {
+
+        scanner.clear();
+
+        berhasilScan(kode);
+
+      },
+
+      gagalScan
+    );
+  }
+
+
+  // =====================================================
+  // JALANKAN SCANNER
+  // =====================================================
+
+  mulaiScanner();
 
 </script>
 
