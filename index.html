@@ -229,9 +229,17 @@
 
     <input
       type="text"
-      id="manualKode"
-      placeholder="Contoh: S003"
-      autocomplete="off"
+  id="manualCari"
+  placeholder="Cari nama atau ID siswa"
+  autocomplete="off"
+  oninput="cariSiswaManual()"
+>
+
+<div id="hasilPencarianManual"></div>
+
+<input
+  type="hidden"
+  id="manualKode"
     >
 
 
@@ -457,7 +465,157 @@
 
   }
 
+function cariSiswaManual() {
 
+  const teks =
+    document
+      .getElementById("manualCari")
+      .value
+      .trim();
+
+  const hasil =
+    document.getElementById(
+      "hasilPencarianManual"
+    );
+
+  if (!teks) {
+
+    hasil.innerHTML = "";
+
+    document.getElementById(
+      "manualKode"
+    ).value = "";
+
+    return;
+  }
+
+  hasil.innerHTML =
+    "Mencari siswa...";
+
+
+  const callbackName =
+    "cariManualCallback" + Date.now();
+
+
+  window[callbackName] =
+    function(data) {
+
+      if (
+        data.berhasil !== true ||
+        !data.data ||
+        data.data.length === 0
+      ) {
+
+        hasil.innerHTML =
+          "❌ Siswa tidak ditemukan.";
+
+        return;
+      }
+
+
+      let html = "";
+
+
+      data.data.forEach(function(siswa) {
+
+        html +=
+
+          '<button ' +
+          'type="button" ' +
+          'onclick="pilihSiswaManual(\'' +
+          siswa.idSiswa +
+          '\',\'' +
+          siswa.nama.replace(/'/g, "\\'") +
+          '\')">' +
+
+          "<b>" +
+          siswa.idSiswa +
+          "</b> - " +
+          siswa.nama +
+
+          "<br>" +
+
+          siswa.tingkat +
+          " - " +
+          siswa.jurusan +
+          " - " +
+          siswa.kelas +
+
+          "</button>";
+
+      });
+
+
+      hasil.innerHTML = html;
+
+
+      delete window[callbackName];
+
+
+      const script =
+        document.getElementById(
+          "cariManualApi"
+        );
+
+      if (script) {
+        script.remove();
+      }
+
+    };
+
+
+  const script =
+    document.createElement("script");
+
+
+  script.id =
+    "cariManualApi";
+
+
+  script.src =
+
+    GAS_URL +
+
+    "?aksi=cariManual" +
+
+    "&teks=" +
+    encodeURIComponent(teks) +
+
+    "&callback=" +
+    callbackName;
+
+
+  document.body.appendChild(script);
+
+}
+
+  function pilihSiswaManual(
+  idSiswa,
+  nama
+) {
+
+  document.getElementById(
+    "manualKode"
+  ).value = idSiswa;
+
+
+  document.getElementById(
+    "manualCari"
+  ).value =
+    idSiswa + " - " + nama;
+
+
+  document.getElementById(
+    "hasilPencarianManual"
+  ).innerHTML =
+
+    "<b>✓ Siswa dipilih:</b><br>" +
+
+    idSiswa +
+    " - " +
+    nama;
+
+}
 
   // =====================================================
   // MULAI SCANNER
@@ -942,7 +1100,15 @@
             .getElementById("manualKode")
             .value =
               "";
+          document
+  .getElementById("manualCari")
+  .value = "";
 
+document
+  .getElementById(
+    "hasilPencarianManual"
+  )
+  .innerHTML = "";
 
           document
             .getElementById(
