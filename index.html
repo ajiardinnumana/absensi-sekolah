@@ -68,6 +68,82 @@
   catatKehadiran(kode);
 }
 
+  function catatKehadiran(kode) {
+
+  const callbackName =
+    "callbackAbsen" + Date.now();
+
+  window[callbackName] = function(data) {
+
+    if (data.berhasil) {
+
+      document.getElementById("hasil").innerHTML =
+        "<b>✓ ABSENSI BERHASIL</b><br><br>" +
+
+        "<strong>" + data.nama + "</strong><br>" +
+
+        data.tingkat + " - " +
+        data.jurusan + "<br>" +
+
+        data.kelas + "<br><br>" +
+
+        "Jam: <b>" + data.jam + "</b><br>" +
+
+        "Status: <b>" +
+        data.status +
+        "</b><br>" +
+
+        "Apel: <b>" +
+        data.apel +
+        "</b>";
+
+    } else if (data.sudahAbsen) {
+
+      document.getElementById("hasil").innerHTML =
+        "<b>⚠ SUDAH ABSEN</b><br><br>" +
+
+        "<strong>" + data.nama + "</strong><br>" +
+
+        "Siswa sudah melakukan absensi hari ini.";
+
+    } else {
+
+      document.getElementById("hasil").innerHTML =
+        "<b>❌ GAGAL</b><br><br>" +
+        data.pesan;
+    }
+
+    delete window[callbackName];
+
+    const script =
+      document.getElementById("gasApi");
+
+    if (script) {
+      script.remove();
+    }
+
+    setTimeout(function() {
+      mulaiScanner();
+    }, 3000);
+  };
+
+
+  const script =
+    document.createElement("script");
+
+  script.id = "gasApi";
+
+  script.src =
+    GAS_URL +
+    "?aksi=absen" +
+    "&kode=" +
+    encodeURIComponent(kode) +
+    "&callback=" +
+    callbackName;
+
+  document.body.appendChild(script);
+}
+
 </script>
 
 </body>
