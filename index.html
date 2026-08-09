@@ -35,7 +35,6 @@
       padding: 15px;
       background: #f1f1f1;
       border-radius: 10px;
-      min-height: 40px;
     }
   </style>
 </head>
@@ -46,145 +45,45 @@
 
   <h2>📷 Absensi Sekolah</h2>
 
-  <p>Scanner barcode siswa</p>
+  <p>Uji coba scanner barcode</p>
 
   <div id="reader"></div>
 
   <div id="hasil">
-    Silakan scan QR Code siswa.
+    Belum ada scan.
   </div>
 
 </div>
 
 <script>
 
-  // =====================================================
-  // MASUKKAN URL WEB APP GAS DI SINI
-  // =====================================================
-
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbxSXinXPPm7qIl_5J99eMKfsHEo-nCZ8MWI-KNt0KsnR4W7mTL-uE4dagGneVg3c_aX/exec";
-
-
-  // =====================================================
-  // SCAN BERHASIL
-  // =====================================================
-
   function berhasilScan(kode) {
 
     document.getElementById("hasil").innerHTML =
-      "<b>Barcode terbaca!</b><br><br>" +
-      "Kode: " + kode +
-      "<br><br>" +
-      "Mencari data siswa...";
-
-    cariSiswa(kode);
+      "<strong>Barcode terbaca!</strong><br><br>" +
+      "Kode: " + kode;
   }
-
-
-  // =====================================================
-  // CARI SISWA KE GOOGLE APPS SCRIPT
-  // =====================================================
-
-  function cariSiswa(kode) {
-
-    const callbackName =
-      "callbackSiswa" + Date.now();
-
-    window[callbackName] = function(data) {
-
-      if (data.ditemukan === true) {
-
-        document.getElementById("hasil").innerHTML =
-          "<b>✓ SISWA DITEMUKAN</b><br><br>" +
-          "<strong>" + data.nama + "</strong><br>" +
-          data.tingkat + " - " +
-          data.jurusan + "<br>" +
-          data.kelas + "<br><br>" +
-          "ID: " + data.idSiswa;
-
-      } else {
-
-        document.getElementById("hasil").innerHTML =
-          "<b>❌ SISWA TIDAK DITEMUKAN</b><br><br>" +
-          "Kode: " + kode;
-      }
-
-      delete window[callbackName];
-
-      const script = document.getElementById("gasApi");
-
-      if (script) {
-        script.remove();
-      }
-
-      setTimeout(function() {
-        mulaiScanner();
-      }, 2500);
-    };
-
-
-    const script = document.createElement("script");
-
-    script.id = "gasApi";
-
-    script.src =
-      GAS_URL +
-      "?kode=" +
-      encodeURIComponent(kode) +
-      "&callback=" +
-      callbackName;
-
-    document.body.appendChild(script);
-  }
-
-
-  // =====================================================
-  // ERROR SCAN
-  // =====================================================
 
   function gagalScan(error) {
-    // Tidak menampilkan error setiap frame kamera.
+    // Abaikan error pembacaan.
   }
 
+  const scanner = new Html5QrcodeScanner(
+    "reader",
+    {
+      fps: 10,
+      qrbox: {
+        width: 250,
+        height: 150
+      }
+    },
+    false
+  );
 
-  // =====================================================
-  // MULAI SCANNER
-  // =====================================================
-
-  function mulaiScanner() {
-
-    document.getElementById("reader").innerHTML = "";
-
-    const scanner = new Html5QrcodeScanner(
-      "reader",
-      {
-        fps: 10,
-        qrbox: {
-          width: 250,
-          height: 150
-        }
-      },
-      false
-    );
-
-    scanner.render(
-      function(kode) {
-
-        scanner.clear();
-
-        berhasilScan(kode);
-
-      },
-      gagalScan
-    );
-  }
-
-
-  // =====================================================
-  // MULAI
-  // =====================================================
-
-  mulaiScanner();
+  scanner.render(
+    berhasilScan,
+    gagalScan
+  );
 
 </script>
 
