@@ -57,33 +57,16 @@
 
 <script>
 
-  function berhasilScan(kode) {
+ function berhasilScan(kode) {
 
-    document.getElementById("hasil").innerHTML =
-      "<strong>Barcode terbaca!</strong><br><br>" +
-      "Kode: " + kode;
-  }
+  document.getElementById("hasil").innerHTML =
+    "<b>Barcode terbaca!</b><br><br>" +
+    "Kode: " + kode +
+    "<br><br>" +
+    "Mencatat kehadiran...";
 
-  function gagalScan(error) {
-    // Abaikan error pembacaan.
-  }
-
-  const scanner = new Html5QrcodeScanner(
-    "reader",
-    {
-      fps: 10,
-      qrbox: {
-        width: 250,
-        height: 150
-      }
-    },
-    false
-  );
-
-  scanner.render(
-    berhasilScan,
-    gagalScan
-  );
+  catatKehadiran(kode);
+}
 
 </script>
 
