@@ -1,14 +1,27 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Absensi Sekolah</title>
 
+  <!-- Library QR Scanner -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 
+
   <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -22,51 +35,92 @@
       background: white;
       padding: 20px;
       border-radius: 12px;
-      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
 
-    input {
-      width: 90%;
+    h2 {
+      margin-top: 0;
+    }
+
+    input,
+    select {
+      width: 100%;
       padding: 12px;
-      margin: 10px 0;
+      margin: 8px 0;
       font-size: 16px;
-      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
 
     button {
-      padding: 12px 20px;
+      width: 100%;
+      padding: 13px;
+      margin: 6px 0;
       font-size: 16px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    #reader {
-      width: 100%;
-      margin-top: 20px;
+    button:active {
+      transform: scale(0.98);
     }
 
-    #hasil {
-      margin-top: 20px;
+    .info {
+      background: #f1f1f1;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .hasil {
+      margin-top: 15px;
       padding: 15px;
       background: #f1f1f1;
-      border-radius: 10px;
-      min-height: 40px;
+      border-radius: 8px;
+      min-height: 50px;
     }
 
-    #scannerArea {
+    .menu {
+      margin-bottom: 15px;
+    }
+
+    .manual-area {
       display: none;
     }
+
+    .scanner-area {
+      display: none;
+    }
+
+    .login-area {
+      display: block;
+    }
+
+    .keterangan {
+      min-height: 80px;
+      resize: vertical;
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-  <!-- ========================= -->
-  <!-- LOGIN -->
-  <!-- ========================= -->
 
-  <div id="loginArea">
+  <!-- ================================================= -->
+  <!-- LOGIN -->
+  <!-- ================================================= -->
+
+  <div
+    id="loginArea"
+    class="login-area"
+  >
 
     <h2>🏫 Absensi Sekolah</h2>
 
@@ -79,98 +133,165 @@
       autocomplete="tel"
     >
 
-    <br>
-
     <button onclick="loginPetugas()">
       MASUK
     </button>
 
-    <div id="loginHasil"></div>
+    <div
+      id="loginHasil"
+      class="hasil"
+    ></div>
 
   </div>
 
 
-  <!-- ========================= -->
-  <!-- SCANNER -->
-  <!-- ========================= -->
 
-  <div id="scannerArea">
-    <div id="manualArea" style="display:none;">
+  <!-- ================================================= -->
+  <!-- SCANNER AREA -->
+  <!-- ================================================= -->
 
-  <h2>📝 Absen Manual</h2>
-
-  <p id="manualPetugas"></p>
-
-  <input
-    type="text"
-    id="manualKode"
-    placeholder="Masukkan ID siswa, contoh S003"
+  <div
+    id="scannerArea"
+    class="scanner-area"
   >
-
-  <br>
-
-  <button onclick="simpanManual('SAKIT')">
-    SAKIT
-  </button>
-
-  <button onclick="simpanManual('IZIN')">
-    IZIN
-  </button>
-
-  <br><br>
-
-  <button onclick="simpanManual('KEGIATAN')">
-    KEGIATAN SEKOLAH
-  </button>
-
-  <br><br>
-
-  <input
-    type="text"
-    id="manualKeterangan"
-    placeholder="Keterangan (opsional)"
-  >
-
-  <div id="manualHasil"></div>
-
-  <br>
-
-  <button onclick="tampilkanScanner()">
-    ← KEMBALI KE SCANNER
-  </button>
-
-</div>
 
     <h2>📷 Scanner Absensi</h2>
 
-    <div id="petugasInfo"></div>
-    <div id="menuArea">
 
-  <button onclick="tampilkanScanner()">
-    📷 SCAN ABSEN
-  </button>
+    <!-- Informasi petugas -->
 
-  <button onclick="tampilkanManual()">
-    📝 ABSEN MANUAL
-  </button>
+    <div
+      id="petugasInfo"
+      class="info"
+    ></div>
 
-</div>
+
+    <!-- Menu -->
+
+    <div
+      id="menuArea"
+      class="menu"
+    >
+
+      <button onclick="mulaiScanner()">
+        📷 SCAN ABSEN
+      </button>
+
+      <button onclick="tampilkanManual()">
+        📝 ABSEN MANUAL
+      </button>
+
+    </div>
+
+
+    <!-- Scanner -->
 
     <div id="reader"></div>
 
-    <div id="hasil">
+
+    <!-- Hasil scan -->
+
+    <div
+      id="hasil"
+      class="hasil"
+    >
       Siap melakukan scan.
     </div>
 
   </div>
 
+
+
+  <!-- ================================================= -->
+  <!-- ABSEN MANUAL -->
+  <!-- ================================================= -->
+
+  <div
+    id="manualArea"
+    class="manual-area"
+  >
+
+    <h2>📝 Absen Manual</h2>
+
+
+    <!-- Informasi petugas -->
+
+    <div
+      id="manualPetugas"
+      class="info"
+    ></div>
+
+
+    <p>
+      Masukkan ID siswa.
+    </p>
+
+
+    <input
+      type="text"
+      id="manualKode"
+      placeholder="Contoh: S003"
+      autocomplete="off"
+    >
+
+
+    <p>
+      Pilih status:
+    </p>
+
+
+    <button
+      onclick="simpanManual('SAKIT')"
+    >
+      SAKIT
+    </button>
+
+
+    <button
+      onclick="simpanManual('IZIN')"
+    >
+      IZIN
+    </button>
+
+
+    <button
+      onclick="simpanManual('KEGIATAN')"
+    >
+      KEGIATAN SEKOLAH
+    </button>
+
+
+    <textarea
+      id="manualKeterangan"
+      class="keterangan"
+      placeholder="Keterangan (opsional)"
+    ></textarea>
+
+
+    <div
+      id="manualHasil"
+      class="hasil"
+    ></div>
+
+
+    <button
+      onclick="kembaliKeScanner()"
+    >
+      ← KEMBALI KE SCANNER
+    </button>
+
+  </div>
+
+
 </div>
+
 
 
 <script>
 
+
   // =====================================================
-  // URL WEB APP GAS
+  // URL WEB APP GOOGLE APPS SCRIPT
   // =====================================================
 
   const GAS_URL =
@@ -178,363 +299,164 @@
 
 
   // =====================================================
-  // DATA PETUGAS YANG LOGIN
+  // DATA PETUGAS
   // =====================================================
 
   let petugas = null;
 
 
   // =====================================================
-  // LOGIN
+  // OBJEK SCANNER
+  // =====================================================
+
+  let scannerAktif = null;
+
+
+
+  // =====================================================
+  // LOGIN PETUGAS
   // =====================================================
 
   function loginPetugas() {
 
     const noHp =
-      document.getElementById("noHp").value.trim();
+      document
+        .getElementById("noHp")
+        .value
+        .trim();
+
 
     if (!noHp) {
 
-      document.getElementById("loginHasil").innerHTML =
-        "<p>Masukkan nomor HP.</p>";
+      document
+        .getElementById("loginHasil")
+        .innerHTML =
+          "⚠️ Masukkan nomor HP.";
 
       return;
     }
 
 
-    document.getElementById("loginHasil").innerHTML =
-      "Memeriksa akun...";
+    document
+      .getElementById("loginHasil")
+      .innerHTML =
+        "Memeriksa akun...";
 
 
     const callbackName =
       "loginCallback" + Date.now();
 
 
-    window[callbackName] = function(data) {
-
-      if (data.berhasil === true) {
-
-        petugas = {
-          idPetugas: data.idPetugas,
-          nama: data.nama
-        };
+    window[callbackName] =
+      function(data) {
 
 
-        document.getElementById("loginArea").style.display =
-          "none";
-
-        document.getElementById("scannerArea").style.display =
-          "block";
+        if (data.berhasil === true) {
 
 
-        document.getElementById("petugasInfo").innerHTML =
-          "<b>Petugas:</b> " +
-          data.nama +
-          "<br>" +
-          "ID: " +
-          data.idPetugas;
+          petugas = {
+
+            idPetugas:
+              data.idPetugas,
+
+            nama:
+              data.nama
+
+          };
 
 
-        mulaiScanner();
+          // Sembunyikan login
 
-      } else {
-
-        document.getElementById("loginHasil").innerHTML =
-          "<p>❌ " +
-          data.pesan +
-          "</p>";
-      }
+          document
+            .getElementById("loginArea")
+            .style.display =
+              "none";
 
 
-      delete window[callbackName];
+          // Tampilkan scanner
 
-      const script =
-        document.getElementById("loginApi");
+          document
+            .getElementById("scannerArea")
+            .style.display =
+              "block";
 
-      if (script) {
-        script.remove();
-      }
-    };
+
+          // Informasi petugas
+
+          document
+            .getElementById("petugasInfo")
+            .innerHTML =
+
+              "<b>Petugas:</b> " +
+              data.nama +
+              "<br>" +
+
+              "<b>ID:</b> " +
+              data.idPetugas;
+
+
+          // Tampilkan scanner
+
+          mulaiScanner();
+
+
+        } else {
+
+
+          document
+            .getElementById("loginHasil")
+            .innerHTML =
+
+              "❌ " +
+              (
+                data.pesan ||
+                "Login gagal."
+              );
+
+        }
+
+
+        delete window[callbackName];
+
+
+        const script =
+          document.getElementById(
+            "loginApi"
+          );
+
+
+        if (script) {
+          script.remove();
+        }
+
+      };
 
 
     const script =
       document.createElement("script");
 
-    script.id = "loginApi";
+
+    script.id =
+      "loginApi";
 
 
     script.src =
+
       GAS_URL +
+
       "?aksi=login" +
+
       "&noHp=" +
       encodeURIComponent(noHp) +
+
       "&callback=" +
       callbackName;
 
 
     document.body.appendChild(script);
-  }
-function tampilkanManual() {
 
-  document.getElementById("scannerArea").style.display =
-    "none";
-
-  document.getElementById("manualArea").style.display =
-    "block";
-
-  document.getElementById("manualPetugas").innerHTML =
-    "<b>Petugas:</b> " +
-    petugas.nama +
-    " (" +
-    petugas.idPetugas +
-    ")";
-
-  document.getElementById("manualHasil").innerHTML =
-    "";
-
-}
-
-  function tampilkanScanner() {
-
-  document.getElementById("manualArea").style.display =
-    "none";
-
-  document.getElementById("scannerArea").style.display =
-    "block";
-
-  document.getElementById("manualHasil").innerHTML =
-    "";
-
-  mulaiScanner();
-
-}
-  function simpanManual(status) {
-
-  const kode =
-    document.getElementById("manualKode").value.trim();
-
-  const keterangan =
-    document.getElementById("manualKeterangan").value.trim();
-
-  if (!kode) {
-
-    document.getElementById("manualHasil").innerHTML =
-      "⚠️ Masukkan ID siswa terlebih dahulu.";
-
-    return;
   }
 
-  document.getElementById("manualHasil").innerHTML =
-    "Menyimpan...";
-
-
-  const callbackName =
-    "manualCallback" + Date.now();
-
-
-  window[callbackName] = function(data) {
-
-    if (data.berhasil === true) {
-
-      document.getElementById("manualHasil").innerHTML =
-
-        "<b>✓ BERHASIL</b><br><br>" +
-
-        "Siswa: <b>" +
-        data.nama +
-        "</b><br>" +
-
-        "ID: " +
-        data.idSiswa +
-        "<br>" +
-
-        "Mode: " +
-        data.mode +
-        "<br>" +
-
-        "Status: <b>" +
-        data.status +
-        "</b><br>" +
-
-        "Petugas: " +
-        data.idPetugas;
-
-      document.getElementById("manualKode").value = "";
-
-      document.getElementById("manualKeterangan").value = "";
-
-    } else {
-
-      document.getElementById("manualHasil").innerHTML =
-
-        "<b>❌ GAGAL</b><br><br>" +
-
-        (data.pesan ||
-        "Terjadi kesalahan.");
-    }
-
-
-    delete window[callbackName];
-
-
-    const script =
-      document.getElementById("manualApi");
-
-    if (script) {
-      script.remove();
-    }
-
-  };
-
-
-  const script =
-    document.createElement("script");
-
-  script.id = "manualApi";
-
-
-  script.src =
-    GAS_URL +
-    "?aksi=manual" +
-    "&kode=" +
-    encodeURIComponent(kode) +
-    "&status=" +
-    encodeURIComponent(status) +
-    "&idPetugas=" +
-    encodeURIComponent(
-      petugas.idPetugas
-    ) +
-    "&keterangan=" +
-    encodeURIComponent(
-      keterangan
-    ) +
-    "&callback=" +
-    callbackName;
-
-
-  document.body.appendChild(script);
-
-}
-
-  // =====================================================
-  // SCAN BERHASIL
-  // =====================================================
-
-  function berhasilScan(kode) {
-
-    document.getElementById("hasil").innerHTML =
-      "<b>Barcode terbaca!</b><br><br>" +
-      "Kode: " +
-      kode +
-      "<br><br>" +
-      "Mencatat kehadiran...";
-
-
-    catatKehadiran(kode);
-  }
-
-
-  // =====================================================
-  // CATAT KEHADIRAN
-  // =====================================================
-
-  function catatKehadiran(kode) {
-
-    const callbackName =
-      "absenCallback" + Date.now();
-
-
-    window[callbackName] = function(data) {
-
-      if (data.berhasil === true) {
-
-        document.getElementById("hasil").innerHTML =
-          "<b>✓ ABSENSI BERHASIL</b><br><br>" +
-
-          "<strong>" +
-          data.nama +
-          "</strong><br>" +
-
-          data.tingkat +
-          " - " +
-          data.jurusan +
-          "<br>" +
-
-          data.kelas +
-          "<br><br>" +
-
-          "Mode: <b>" +
-          data.mode +
-          "</b><br>" +
-
-          "Jam: <b>" +
-          data.jam +
-          "</b><br>" +
-
-          "Status: <b>" +
-          data.status +
-          "</b><br>" +
-
-          "Apel: <b>" +
-          data.apel +
-          "</b>";
-
-      } else {
-
-        document.getElementById("hasil").innerHTML =
-          "<b>❌ GAGAL</b><br><br>" +
-          (data.pesan || "Terjadi kesalahan.");
-      }
-
-
-      delete window[callbackName];
-
-
-      const script =
-        document.getElementById("absenApi");
-
-      if (script) {
-        script.remove();
-      }
-
-
-      setTimeout(function() {
-
-        mulaiScanner();
-
-      }, 3000);
-
-    };
-
-
-    const script =
-      document.createElement("script");
-
-    script.id = "absenApi";
-
-
-  script.src =
-  GAS_URL +
-  "?aksi=absen" +
-  "&kode=" +
-  encodeURIComponent(kode) +
-  "&idPetugas=" +
-  encodeURIComponent(petugas.idPetugas) +
-  "&callback=" +
-  callbackName;
-
-
-    document.body.appendChild(script);
-  }
-
-
-  // =====================================================
-  // ERROR SCAN
-  // =====================================================
-
-  function gagalScan(error) {
-    // Abaikan error pembacaan frame kamera.
-  }
 
 
   // =====================================================
@@ -543,39 +465,601 @@ function tampilkanManual() {
 
   function mulaiScanner() {
 
-    document.getElementById("reader").innerHTML = "";
+
+    if (!petugas) {
+
+      alert(
+        "Silakan login terlebih dahulu."
+      );
+
+      return;
+    }
 
 
-    const scanner =
-      new Html5QrcodeScanner(
-        "reader",
-        {
-          fps: 10,
+    // Sembunyikan manual
 
-          qrbox: {
-            width: 250,
-            height: 150
+    document
+      .getElementById("manualArea")
+      .style.display =
+        "none";
+
+
+    document
+      .getElementById("scannerArea")
+      .style.display =
+        "block";
+
+
+    // Bersihkan scanner lama
+
+    document
+      .getElementById("reader")
+      .innerHTML =
+        "";
+
+
+    document
+      .getElementById("hasil")
+      .innerHTML =
+        "Menyalakan kamera...";
+
+
+    try {
+
+
+      scannerAktif =
+        new Html5QrcodeScanner(
+
+          "reader",
+
+          {
+
+            fps: 10,
+
+            qrbox: {
+              width: 250,
+              height: 150
+            }
+
+          },
+
+          false
+
+        );
+
+
+      scannerAktif.render(
+
+        function(kode) {
+
+          // Scan berhasil
+
+          if (scannerAktif) {
+
+            scannerAktif
+              .clear()
+              .catch(
+                function() {}
+              );
+
           }
+
+
+          scannerAktif = null;
+
+
+          berhasilScan(kode);
+
         },
 
-        false
+
+        function(error) {
+
+          // Error pembacaan frame
+          // sengaja tidak ditampilkan
+
+        }
+
       );
 
 
-    scanner.render(
-      function(kode) {
+    } catch (error) {
 
-        scanner.clear();
 
-        berhasilScan(kode);
+      document
+        .getElementById("hasil")
+        .innerHTML =
 
-      },
+          "❌ Kamera tidak dapat dijalankan.<br><br>" +
 
-      gagalScan
-    );
+          error.message;
+
+    }
+
   }
+
+
+
+  // =====================================================
+  // HASIL SCAN
+  // =====================================================
+
+  function berhasilScan(kode) {
+
+
+    document
+      .getElementById("hasil")
+      .innerHTML =
+
+        "<b>✓ Barcode terbaca</b><br><br>" +
+
+        "Kode: <b>" +
+        kode +
+        "</b><br><br>" +
+
+        "Mencatat kehadiran...";
+
+
+    catatKehadiran(kode);
+
+  }
+
+
+
+  // =====================================================
+  // CATAT KEHADIRAN
+  // =====================================================
+
+  function catatKehadiran(kode) {
+
+
+    if (!petugas) {
+
+      document
+        .getElementById("hasil")
+        .innerHTML =
+          "❌ Petugas belum login.";
+
+      return;
+    }
+
+
+    const callbackName =
+      "absenCallback" + Date.now();
+
+
+    window[callbackName] =
+      function(data) {
+
+
+        if (data.berhasil === true) {
+
+
+          document
+            .getElementById("hasil")
+            .innerHTML =
+
+              "<b>✓ ABSENSI BERHASIL</b>" +
+
+              "<br><br>" +
+
+              "<strong>" +
+              data.nama +
+              "</strong>" +
+
+              "<br>" +
+
+              "ID: " +
+              data.idSiswa +
+
+              "<br>" +
+
+              data.tingkat +
+              " - " +
+              data.jurusan +
+
+              "<br>" +
+
+              data.kelas +
+
+              "<br><br>" +
+
+              "Mode: <b>" +
+              data.mode +
+              "</b>" +
+
+              "<br>" +
+
+              "Jam: <b>" +
+              data.jam +
+              "</b>" +
+
+              "<br>" +
+
+              "Status: <b>" +
+              data.status +
+              "</b>" +
+
+              "<br>" +
+
+              "Apel: <b>" +
+              data.apel +
+              "</b>";
+
+
+        } else {
+
+
+          document
+            .getElementById("hasil")
+            .innerHTML =
+
+              "<b>❌ GAGAL</b>" +
+
+              "<br><br>" +
+
+              (
+                data.pesan ||
+                "Terjadi kesalahan."
+              );
+
+        }
+
+
+        delete window[callbackName];
+
+
+        const script =
+          document.getElementById(
+            "absenApi"
+          );
+
+
+        if (script) {
+          script.remove();
+        }
+
+
+        // Setelah 3 detik
+        // scanner bisa digunakan lagi
+
+        setTimeout(
+          function() {
+
+            mulaiScanner();
+
+          },
+          3000
+        );
+
+      };
+
+
+    const script =
+      document.createElement("script");
+
+
+    script.id =
+      "absenApi";
+
+
+    script.src =
+
+      GAS_URL +
+
+      "?aksi=absen" +
+
+      "&kode=" +
+      encodeURIComponent(kode) +
+
+      "&idPetugas=" +
+      encodeURIComponent(
+        petugas.idPetugas
+      ) +
+
+      "&callback=" +
+      callbackName;
+
+
+    document.body.appendChild(script);
+
+  }
+
+
+
+  // =====================================================
+  // TAMPILKAN MENU MANUAL
+  // =====================================================
+
+  function tampilkanManual() {
+
+
+    // Hentikan scanner
+
+    if (scannerAktif) {
+
+      scannerAktif
+        .clear()
+        .catch(
+          function() {}
+        );
+
+      scannerAktif = null;
+
+    }
+
+
+    document
+      .getElementById("reader")
+      .innerHTML =
+        "";
+
+
+    // Sembunyikan scanner
+
+    document
+      .getElementById("scannerArea")
+      .style.display =
+        "none";
+
+
+    // Tampilkan manual
+
+    document
+      .getElementById("manualArea")
+      .style.display =
+        "block";
+
+
+    // Informasi petugas
+
+    document
+      .getElementById("manualPetugas")
+      .innerHTML =
+
+        "<b>Petugas:</b> " +
+        petugas.nama +
+
+        "<br>" +
+
+        "<b>ID:</b> " +
+        petugas.idPetugas;
+
+
+    // Bersihkan hasil lama
+
+    document
+      .getElementById("manualHasil")
+      .innerHTML =
+        "";
+
+  }
+
+
+
+  // =====================================================
+  // SIMPAN ABSEN MANUAL
+  // =====================================================
+
+  function simpanManual(status) {
+
+
+    if (!petugas) {
+
+      document
+        .getElementById("manualHasil")
+        .innerHTML =
+          "❌ Petugas belum login.";
+
+      return;
+    }
+
+
+    const kode =
+
+      document
+        .getElementById("manualKode")
+        .value
+        .trim();
+
+
+    const keterangan =
+
+      document
+        .getElementById(
+          "manualKeterangan"
+        )
+        .value
+        .trim();
+
+
+    if (!kode) {
+
+      document
+        .getElementById("manualHasil")
+        .innerHTML =
+
+          "⚠️ Masukkan ID siswa terlebih dahulu.";
+
+      return;
+    }
+
+
+    document
+      .getElementById("manualHasil")
+      .innerHTML =
+        "Menyimpan...";
+
+
+    const callbackName =
+      "manualCallback" + Date.now();
+
+
+    window[callbackName] =
+      function(data) {
+
+
+        if (data.berhasil === true) {
+
+
+          document
+            .getElementById("manualHasil")
+            .innerHTML =
+
+              "<b>✓ BERHASIL</b>" +
+
+              "<br><br>" +
+
+              "Siswa: <b>" +
+              data.nama +
+              "</b>" +
+
+              "<br>" +
+
+              "ID: " +
+              data.idSiswa +
+
+              "<br>" +
+
+              "Mode: " +
+              data.mode +
+
+              "<br>" +
+
+              "Status: <b>" +
+              data.status +
+              "</b>" +
+
+              "<br>" +
+
+              "Petugas: " +
+              data.idPetugas;
+
+
+          // Kosongkan form
+
+          document
+            .getElementById("manualKode")
+            .value =
+              "";
+
+
+          document
+            .getElementById(
+              "manualKeterangan"
+            )
+            .value =
+              "";
+
+
+        } else {
+
+
+          document
+            .getElementById("manualHasil")
+            .innerHTML =
+
+              "<b>❌ GAGAL</b>" +
+
+              "<br><br>" +
+
+              (
+                data.pesan ||
+                "Terjadi kesalahan."
+              );
+
+        }
+
+
+        delete window[callbackName];
+
+
+        const script =
+          document.getElementById(
+            "manualApi"
+          );
+
+
+        if (script) {
+          script.remove();
+        }
+
+      };
+
+
+    const script =
+      document.createElement("script");
+
+
+    script.id =
+      "manualApi";
+
+
+    script.src =
+
+      GAS_URL +
+
+      "?aksi=manual" +
+
+      "&kode=" +
+      encodeURIComponent(kode) +
+
+      "&status=" +
+      encodeURIComponent(status) +
+
+      "&idPetugas=" +
+      encodeURIComponent(
+        petugas.idPetugas
+      ) +
+
+      "&keterangan=" +
+      encodeURIComponent(
+        keterangan
+      ) +
+
+      "&callback=" +
+      callbackName;
+
+
+    document.body.appendChild(script);
+
+  }
+
+
+
+  // =====================================================
+  // KEMBALI KE SCANNER
+  // =====================================================
+
+  function kembaliKeScanner() {
+
+
+    document
+      .getElementById("manualArea")
+      .style.display =
+        "none";
+
+
+    document
+      .getElementById("scannerArea")
+      .style.display =
+        "block";
+
+
+    document
+      .getElementById("manualHasil")
+      .innerHTML =
+        "";
+
+
+    mulaiScanner();
+
+  }
+
 
 </script>
 
+
 </body>
+
 </html>
