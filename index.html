@@ -1,53 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Absensi Sekolah</title>
+
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    #reader {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    #hasil {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f1f1f1;
+      border-radius: 10px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2>📷 Absensi Sekolah</h2>
+
+  <p>Scanner barcode siswa</p>
+
+  <div id="reader"></div>
+
+  <div id="hasil">
+    Silakan scan QR Code siswa.
+  </div>
+
+</div>
+
 <script>
 
-  // GANTI dengan URL Web App GAS milikmu
-  const GAS_URL =
-    "https://script.google.com/macros/s/AKfycbxSXinXPPm7qIl_5J99eMKfsHEo-nCZ8MWI-KNt0KsnR4W7mTL-uE4dagGneVg3c_aX/exec";
+  // =====================================================
+  // MASUKKAN URL WEB APP GAS DI SINI
+  // =====================================================
 
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbxSXinXPPm7qIl_5J99eMKfsHEo-nCZ8MWI-KNt0KsnR4W7mTL-uE4dagGneVg3c_aX/exec";
+
+
+  // =====================================================
+  // SCAN BERHASIL
+  // =====================================================
 
   function berhasilScan(kode) {
 
     document.getElementById("hasil").innerHTML =
-      "<strong>Barcode terbaca!</strong><br><br>" +
+      "<b>Barcode terbaca!</b><br><br>" +
       "Kode: " + kode +
-      "<br><br>Mencari data siswa...";
+      "<br><br>" +
+      "Mencari data siswa...";
 
-    cariDataSiswa(kode);
+    cariSiswa(kode);
   }
 
 
-  function cariDataSiswa(kode) {
+  // =====================================================
+  // CARI SISWA KE GOOGLE APPS SCRIPT
+  // =====================================================
+
+  function cariSiswa(kode) {
 
     const callbackName =
-      "hasilSiswa_" + Date.now();
+      "callbackSiswa" + Date.now();
 
     window[callbackName] = function(data) {
 
-      if (data.ditemukan) {
+      if (data.ditemukan === true) {
 
         document.getElementById("hasil").innerHTML =
-          "<strong>✓ SISWA DITEMUKAN</strong><br><br>" +
-
-          "<b>" + data.nama + "</b><br>" +
-
+          "<b>✓ SISWA DITEMUKAN</b><br><br>" +
+          "<strong>" + data.nama + "</strong><br>" +
           data.tingkat + " - " +
           data.jurusan + "<br>" +
-
           data.kelas + "<br><br>" +
-
           "ID: " + data.idSiswa;
 
       } else {
 
         document.getElementById("hasil").innerHTML =
-          "<strong>❌ SISWA TIDAK DITEMUKAN</strong><br><br>" +
+          "<b>❌ SISWA TIDAK DITEMUKAN</b><br><br>" +
           "Kode: " + kode;
       }
 
       delete window[callbackName];
-      document.getElementById("apiScript").remove();
 
-      // Aktifkan scanner kembali
+      const script = document.getElementById("gasApi");
+
+      if (script) {
+        script.remove();
+      }
+
       setTimeout(function() {
         mulaiScanner();
       }, 2500);
@@ -56,23 +125,35 @@
 
     const script = document.createElement("script");
 
-    script.id = "apiScript";
+    script.id = "gasApi";
 
     script.src =
       GAS_URL +
-      "?kode=" + encodeURIComponent(kode) +
-      "&callback=" + callbackName;
+      "?kode=" +
+      encodeURIComponent(kode) +
+      "&callback=" +
+      callbackName;
 
     document.body.appendChild(script);
   }
 
 
+  // =====================================================
+  // ERROR SCAN
+  // =====================================================
+
   function gagalScan(error) {
-    // Error frame kamera tidak perlu ditampilkan
+    // Tidak menampilkan error setiap frame kamera.
   }
 
 
+  // =====================================================
+  // MULAI SCANNER
+  // =====================================================
+
   function mulaiScanner() {
+
+    document.getElementById("reader").innerHTML = "";
 
     const scanner = new Html5QrcodeScanner(
       "reader",
@@ -99,6 +180,13 @@
   }
 
 
+  // =====================================================
+  // MULAI
+  // =====================================================
+
   mulaiScanner();
 
 </script>
+
+</body>
+</html>
