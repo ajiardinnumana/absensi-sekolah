@@ -1229,6 +1229,103 @@ document
   }
 
 
+  function bukaTindakLanjut() {
+
+  const area =
+    document.getElementById("tindakLanjutArea");
+
+  area.innerHTML =
+    "<p>Memuat data tindak lanjut...</p>";
+
+  const url =
+    GAS_URL +
+    "?aksi=tindakLanjut&callback=tampilkanTindakLanjut";
+
+  const script =
+    document.createElement("script");
+
+  script.src = url;
+
+  document.body.appendChild(script);
+}
+
+
+function tampilkanTindakLanjut(data) {
+
+  const area =
+    document.getElementById("tindakLanjutArea");
+
+  if (!data || !data.berhasil) {
+
+    area.innerHTML =
+      "<p>❌ Gagal mengambil data tindak lanjut.</p>";
+
+    return;
+  }
+
+
+  if (data.jumlah === 0) {
+
+    area.innerHTML = `
+      <div class="info-box">
+        ✅ Tidak ada siswa yang perlu
+        ditindaklanjuti.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  let html = `
+    <h3>⚠️ Perlu Tindak Lanjut</h3>
+  `;
+
+
+  data.data.forEach(function(item) {
+
+    html += `
+      <div class="tindak-card">
+
+        <strong>
+          ${item.idSiswa} - ${item.nama}
+        </strong>
+
+        <br>
+
+        Kelas:
+        ${item.kelas}
+
+        <br>
+
+        Terlambat:
+        ${item.jumlahTerlambat} kali
+
+        <br>
+
+        Tanggal:
+        ${item.tanggal}
+
+        <br>
+
+        Status:
+        <strong>${item.status}</strong>
+
+        <br>
+
+        <small>
+          ${item.catatan || ""}
+        </small>
+
+      </div>
+    `;
+
+  });
+
+
+  area.innerHTML = html;
+}
+
 </script>
 
 
