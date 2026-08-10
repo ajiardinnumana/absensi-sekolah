@@ -15,7 +15,6 @@
   <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -38,6 +37,10 @@
 
     h2 {
       margin-top: 0;
+    }
+
+    h3 {
+      margin-bottom: 10px;
     }
 
     input,
@@ -64,6 +67,7 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      background: #e9e9e9;
     }
 
     button:active {
@@ -105,10 +109,23 @@
       background: #fff3cd;
       padding: 12px;
       border-radius: 8px;
-      margin: 8px 0;
+      margin: 10px 0;
       border: 1px solid #ffe69c;
     }
 
+    .pilihan-siswa {
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .pilihan-siswa:hover {
+      background: #eeeeee;
+    }
+
+    .tindak-button {
+      margin-top: 12px;
+    }
   </style>
 
 </head>
@@ -139,7 +156,10 @@
       autocomplete="tel"
     >
 
-    <button onclick="loginPetugas()">
+    <button
+      type="button"
+      onclick="loginPetugas()"
+    >
       MASUK
     </button>
 
@@ -177,15 +197,24 @@
       class="menu"
     >
 
-      <button onclick="mulaiScanner()">
+      <button
+        type="button"
+        onclick="mulaiScanner()"
+      >
         📷 SCAN ABSEN
       </button>
 
-      <button onclick="tampilkanManual()">
+      <button
+        type="button"
+        onclick="tampilkanManual()"
+      >
         📝 ABSEN MANUAL
       </button>
 
-      <button onclick="bukaTindakLanjut()">
+      <button
+        type="button"
+        onclick="bukaTindakLanjut()"
+      >
         ⚠️ TINDAK LANJUT
       </button>
 
@@ -232,7 +261,7 @@
 
 
     <p>
-      Masukkan ID siswa atau cari nama siswa.
+      Cari nama atau ID siswa.
     </p>
 
 
@@ -245,7 +274,9 @@
     >
 
 
-    <div id="hasilPencarianManual"></div>
+    <div
+      id="hasilPencarianManual"
+    ></div>
 
 
     <input
@@ -260,6 +291,7 @@
 
 
     <button
+      type="button"
       onclick="simpanManual('SAKIT')"
     >
       SAKIT
@@ -267,6 +299,7 @@
 
 
     <button
+      type="button"
       onclick="simpanManual('IZIN')"
     >
       IZIN
@@ -274,6 +307,7 @@
 
 
     <button
+      type="button"
       onclick="simpanManual('KEGIATAN')"
     >
       KEGIATAN SEKOLAH
@@ -293,6 +327,7 @@
 
 
     <button
+      type="button"
       onclick="kembaliKeScanner()"
     >
       ← KEMBALI KE SCANNER
@@ -330,7 +365,7 @@
 
 
   // =====================================================
-  // FUNGSI MEMBERSIHKAN CALLBACK
+  // MEMBERSIHKAN CALLBACK
   // =====================================================
 
   function bersihkanCallback(
@@ -356,28 +391,28 @@
 
   function loginPetugas() {
 
+    const input =
+      document.getElementById("noHp");
+
+    const hasil =
+      document.getElementById("loginHasil");
+
     const noHp =
-      document
-        .getElementById("noHp")
-        .value
-        .trim();
+      input.value.trim();
 
 
     if (!noHp) {
 
-      document
-        .getElementById("loginHasil")
-        .innerHTML =
-          "⚠️ Masukkan nomor HP.";
+      hasil.innerHTML =
+        "⚠️ Masukkan nomor HP.";
 
       return;
+
     }
 
 
-    document
-      .getElementById("loginHasil")
-      .innerHTML =
-        "Memeriksa akun...";
+    hasil.innerHTML =
+      "Memeriksa akun...";
 
 
     const callbackName =
@@ -438,19 +473,19 @@
 
           mulaiScanner();
 
+
         } else {
 
-          document
-            .getElementById("loginHasil")
-            .innerHTML =
+          hasil.innerHTML =
 
-              "❌ " +
-              (
-                data &&
-                data.pesan
-                  ? data.pesan
-                  : "Login gagal."
-              );
+            "❌ " +
+
+            (
+              data &&
+              data.pesan
+                ? data.pesan
+                : "Login gagal."
+            );
 
         }
 
@@ -517,6 +552,7 @@
         .value = "";
 
       return;
+
     }
 
 
@@ -534,7 +570,7 @@
         if (
           !data ||
           data.berhasil !== true ||
-          !data.data ||
+          !Array.isArray(data.data) ||
           data.data.length === 0
         ) {
 
@@ -547,6 +583,7 @@
           );
 
           return;
+
         }
 
 
@@ -556,31 +593,56 @@
         data.data.forEach(
           function(siswa) {
 
-            const namaAman =
+            const id =
+              String(
+                siswa.idSiswa || ""
+              );
+
+            const nama =
               String(
                 siswa.nama || ""
-              )
-                .replace(
-                  /\\/g,
-                  "\\\\"
-                )
-                .replace(
-                  /'/g,
-                  "\\'"
-                );
+              );
+
+
+            const tingkat =
+              String(
+                siswa.tingkat || ""
+              );
+
+            const jurusan =
+              String(
+                siswa.jurusan || ""
+              );
+
+            const kelas =
+              String(
+                siswa.kelas || ""
+              );
+
+
+            const idAman =
+              id
+                .replace(/\\/g, "\\\\")
+                .replace(/'/g, "\\'");
+
+
+            const namaAman =
+              nama
+                .replace(/\\/g, "\\\\")
+                .replace(/'/g, "\\'");
 
 
             html +=
 
               "<button " +
 
-              "type=\"button\" " +
+              "type='button' " +
+
+              "class='pilihan-siswa' " +
 
               "onclick=\"pilihSiswaManual('" +
 
-              String(
-                siswa.idSiswa
-              ) +
+              idAman +
 
               "','" +
 
@@ -589,17 +651,17 @@
               "')\">" +
 
               "<b>" +
-              siswa.idSiswa +
+              id +
               "</b> - " +
-              siswa.nama +
+              nama +
 
               "<br>" +
 
-              siswa.tingkat +
+              tingkat +
               " - " +
-              siswa.jurusan +
+              jurusan +
               " - " +
-              siswa.kelas +
+              kelas +
 
               "</button>";
 
@@ -696,6 +758,7 @@
       );
 
       return;
+
     }
 
 
@@ -737,14 +800,12 @@
           "reader",
 
           {
-
             fps: 10,
 
             qrbox: {
               width: 250,
               height: 150
             }
-
           },
 
           false
@@ -755,8 +816,6 @@
       scannerAktif.render(
 
         function(kode) {
-
-          // Scan berhasil
 
           if (scannerAktif) {
 
@@ -779,8 +838,7 @@
 
         function(error) {
 
-          // Error frame
-          // sengaja tidak ditampilkan
+          // Error frame tidak ditampilkan
 
         }
 
@@ -794,7 +852,9 @@
         .innerHTML =
 
           "❌ Kamera tidak dapat dijalankan." +
+
           "<br><br>" +
+
           error.message;
 
     }
@@ -844,6 +904,7 @@
           "❌ Petugas belum login.";
 
       return;
+
     }
 
 
@@ -868,46 +929,46 @@
               "<br><br>" +
 
               "<strong>" +
-              data.nama +
+              (data.nama || "") +
               "</strong>" +
 
               "<br>" +
 
               "ID: " +
-              data.idSiswa +
+              (data.idSiswa || "") +
 
               "<br>" +
 
-              data.tingkat +
+              (data.tingkat || "") +
               " - " +
-              data.jurusan +
+              (data.jurusan || "") +
 
               "<br>" +
 
-              data.kelas +
+              (data.kelas || "") +
 
               "<br><br>" +
 
               "Mode: <b>" +
-              data.mode +
+              (data.mode || "") +
               "</b>" +
 
               "<br>" +
 
               "Jam: <b>" +
-              data.jam +
+              (data.jam || "") +
               "</b>" +
 
               "<br>" +
 
               "Status: <b>" +
-              data.status +
+              (data.status || "") +
               "</b>" +
 
               "<br>" +
 
               "Apel: <b>" +
-              data.apel +
+              (data.apel || "") +
               "</b>";
 
         } else {
@@ -936,14 +997,9 @@
         );
 
 
-        // Setelah 3 detik,
-        // scanner bisa digunakan lagi
-
         setTimeout(
           function() {
-
             mulaiScanner();
-
           },
           3000
         );
@@ -988,8 +1044,6 @@
 
   function tampilkanManual() {
 
-    // Hentikan scanner
-
     if (scannerAktif) {
 
       scannerAktif
@@ -1009,23 +1063,17 @@
         "";
 
 
-    // Sembunyikan scanner
-
     document
       .getElementById("scannerArea")
       .style.display =
         "none";
 
 
-    // Tampilkan manual
-
     document
       .getElementById("manualArea")
       .style.display =
         "block";
 
-
-    // Informasi petugas
 
     document
       .getElementById("manualPetugas")
@@ -1039,8 +1087,6 @@
         "<b>ID:</b> " +
         petugas.idPetugas;
 
-
-    // Bersihkan hasil lama
 
     document
       .getElementById("manualHasil")
@@ -1064,11 +1110,11 @@
           "❌ Petugas belum login.";
 
       return;
+
     }
 
 
     const kode =
-
       document
         .getElementById("manualKode")
         .value
@@ -1076,7 +1122,6 @@
 
 
     const keterangan =
-
       document
         .getElementById(
           "manualKeterangan"
@@ -1091,9 +1136,10 @@
         .getElementById("manualHasil")
         .innerHTML =
 
-          "⚠️ Masukkan ID siswa terlebih dahulu.";
+          "⚠️ Pilih siswa terlebih dahulu.";
 
       return;
+
     }
 
 
@@ -1124,32 +1170,29 @@
               "<br><br>" +
 
               "Siswa: <b>" +
-              data.nama +
+              (data.nama || "") +
               "</b>" +
 
               "<br>" +
 
               "ID: " +
-              data.idSiswa +
+              (data.idSiswa || "") +
 
               "<br>" +
 
               "Mode: " +
-              data.mode +
+              (data.mode || "") +
 
               "<br>" +
 
               "Status: <b>" +
-              data.status +
+              (data.status || "") +
               "</b>" +
 
               "<br>" +
 
               "Petugas: " +
-              data.idPetugas;
-
-
-          // Kosongkan form
+              (data.idPetugas || "");
 
           document
             .getElementById("manualKode")
@@ -1229,9 +1272,7 @@
       ) +
 
       "&keterangan=" +
-      encodeURIComponent(
-        keterangan
-      ) +
+      encodeURIComponent(keterangan) +
 
       "&callback=" +
       callbackName;
@@ -1247,6 +1288,17 @@
   // =====================================================
 
   function bukaTindakLanjut() {
+
+    if (!petugas) {
+
+      alert(
+        "Silakan login terlebih dahulu."
+      );
+
+      return;
+
+    }
+
 
     const area =
       document.getElementById(
@@ -1273,8 +1325,20 @@
         ) {
 
           area.innerHTML =
+
             "<div class='info'>" +
+
             "❌ Gagal mengambil data tindak lanjut." +
+
+            "<br><br>" +
+
+            (
+              data &&
+              data.pesan
+                ? data.pesan
+                : "Tidak ada respons dari server."
+            ) +
+
             "</div>";
 
 
@@ -1284,13 +1348,12 @@
           );
 
           return;
+
         }
 
 
-        // Tidak ada data
-
         if (
-          data.jumlah === 0
+          Number(data.jumlah) === 0
         ) {
 
           area.innerHTML =
@@ -1309,70 +1372,86 @@
             "<h3>⚠️ Perlu Tindak Lanjut</h3>";
 
 
-          data.data.forEach(
-            function(item) {
+          if (
+            Array.isArray(data.data)
+          ) {
 
-             html += `
-  <div class="tindak-card">
+            data.data.forEach(
+              function(item) {
 
-    <strong>
-      ${item.idSiswa} - ${item.nama}
-    </strong>
+                html +=
 
-    <br><br>
+                  "<div class='tindak-card'>" +
 
-    Kelas:
-    ${item.tingkat || ""} -
-    ${item.jurusan || ""} -
-    ${item.kelas || ""}
+                  "<strong>" +
+                  (item.idSiswa || "") +
+                  " - " +
+                  (item.nama || "") +
+                  "</strong>" +
 
-    <br>
+                  "<br><br>" +
 
-    ALPA:
-    <strong>
-      ${item.jumlahAlpa || 0} kali
-    </strong>
+                  "Kelas: " +
+                  (item.tingkat || "") +
+                  " - " +
+                  (item.jurusan || "") +
+                  " - " +
+                  (item.kelas || "") +
 
-    <br>
+                  "<br>" +
 
-    Terlambat:
-    <strong>
-      ${item.jumlahTerlambat || 0} kali
-    </strong>
+                  "ALPA: <strong>" +
+                  (item.jumlahAlpa || 0) +
+                  " kali</strong>" +
 
-    <br>
+                  "<br>" +
 
-    Sakit:
-    ${item.jumlahSakit || 0} kali
+                  "Terlambat: <strong>" +
+                  (item.jumlahTerlambat || 0) +
+                  " kali</strong>" +
 
-    <br>
+                  "<br>" +
 
-    Izin:
-    ${item.jumlahIzin || 0} kali
+                  "Sakit: " +
+                  (item.jumlahSakit || 0) +
+                  " kali" +
 
-    <br>
+                  "<br>" +
 
-    Tanggal terakhir:
-    ${item.tanggal || "-"}
+                  "Izin: " +
+                  (item.jumlahIzin || 0) +
+                  " kali" +
 
-    <br>
+                  "<br>" +
 
-    Status terakhir:
-    <strong>
-      ${item.status || "-"}
-    </strong>
+                  "Tanggal terakhir: " +
+                  (item.tanggal || "-") +
 
-    <br><br>
+                  "<br>" +
 
-    <button
-      type="button"
-      onclick="tindaklanjutiSiswa('${item.idSiswa}')"
-    >
-      ✓ SUDAH DITINDAKLANJUTI
-    </button>
+                  "Status terakhir: <strong>" +
+                  (item.status || "-") +
+                  "</strong>" +
 
-  </div>
-`;
+                  "<br><br>" +
+
+                  "<button " +
+                  "type='button' " +
+                  "class='tindak-button' " +
+                  "onclick=\"tindaklanjutiSiswa('" +
+                  String(item.idSiswa || "")
+                    .replace(/\\/g, "\\\\")
+                    .replace(/'/g, "\\'") +
+                  "')\">" +
+                  "✓ SUDAH DITINDAKLANJUTI" +
+                  "</button>" +
+
+                  "</div>";
+
+              }
+            );
+
+          }
 
 
           area.innerHTML =
@@ -1413,6 +1492,161 @@
 
 
   // =====================================================
+  // SIMPAN TINDAK LANJUT
+  // =====================================================
+
+  function tindaklanjutiSiswa(idSiswa) {
+
+    if (!petugas) {
+
+      alert(
+        "Petugas belum login."
+      );
+
+      return;
+
+    }
+
+
+    const catatan =
+      prompt(
+        "Catatan tindak lanjut (opsional):"
+      );
+
+
+    if (catatan === null) {
+
+      return;
+
+    }
+
+
+    const area =
+      document.getElementById(
+        "tindakLanjutArea"
+      );
+
+
+    area.innerHTML =
+      "<div class='info'>" +
+      "⏳ Menyimpan tindak lanjut..." +
+      "</div>";
+
+
+    const callbackName =
+      "simpanTindakLanjutCallback" +
+      Date.now();
+
+
+    window[callbackName] =
+      function(data) {
+
+        if (
+          data &&
+          data.berhasil === true
+        ) {
+
+          area.innerHTML =
+
+            "<div class='info'>" +
+
+            "✅ <b>Tindak lanjut berhasil disimpan.</b>" +
+
+            "<br><br>" +
+
+            "ID Siswa: " +
+            (data.idSiswa || idSiswa) +
+
+            "<br>" +
+
+            "Petugas: " +
+            (data.idPetugas || petugas.idPetugas) +
+
+            "<br>" +
+
+            "Waktu: " +
+            (data.waktu || "-") +
+
+            "</div>";
+
+
+          setTimeout(
+            function() {
+
+              bukaTindakLanjut();
+
+            },
+            1500
+          );
+
+
+        } else {
+
+          area.innerHTML =
+
+            "<div class='hasil'>" +
+
+            "❌ <b>Gagal menyimpan.</b>" +
+
+            "<br><br>" +
+
+            (
+              data &&
+              data.pesan
+                ? data.pesan
+                : "Terjadi kesalahan."
+            ) +
+
+            "</div>";
+
+        }
+
+
+        bersihkanCallback(
+          "simpanTindakLanjutApi",
+          callbackName
+        );
+
+      };
+
+
+    const script =
+      document.createElement("script");
+
+
+    script.id =
+      "simpanTindakLanjutApi";
+
+
+    script.src =
+
+      GAS_URL +
+
+      "?aksi=simpanTindakLanjut" +
+
+      "&idSiswa=" +
+      encodeURIComponent(idSiswa) +
+
+      "&idPetugas=" +
+      encodeURIComponent(
+        petugas.idPetugas
+      ) +
+
+      "&catatan=" +
+      encodeURIComponent(catatan) +
+
+      "&callback=" +
+      callbackName;
+
+
+    document.body.appendChild(
+      script
+    );
+
+  }
+
+
+  // =====================================================
   // KEMBALI KE SCANNER
   // =====================================================
 
@@ -1440,176 +1674,9 @@
 
   }
 
-    // =====================================================
-// SIMPAN TINDAK LANJUT DARI HALAMAN WEB
-// =====================================================
-
-function tindaklanjutiSiswa(idSiswa) {
-
-  if (!petugas) {
-
-    alert(
-      "Petugas belum login."
-    );
-
-    return;
-
-  }
-
-
-  const catatan =
-    prompt(
-      "Catatan tindak lanjut (opsional):"
-    );
-
-
-  if (catatan === null) {
-
-    return;
-
-  }
-
-
-  const area =
-    document.getElementById(
-      "tindakLanjutArea"
-    );
-
-
-  area.innerHTML =
-    "<p>⏳ Menyimpan tindak lanjut...</p>";
-
-
-  const callbackName =
-    "simpanTindakLanjutCallback" +
-    Date.now();
-
-
-  window[callbackName] =
-    function(data) {
-
-      if (
-        data &&
-        data.berhasil === true
-      ) {
-
-        area.innerHTML =
-
-          "<div class='info'>" +
-
-          "✅ <b>Tindak lanjut berhasil disimpan.</b>" +
-
-          "<br><br>" +
-
-          "ID Siswa: " +
-          data.idSiswa +
-
-          "<br>" +
-
-          "Petugas: " +
-          data.idPetugas +
-
-          "<br>" +
-
-          "Waktu: " +
-          data.waktu +
-
-          "</div>";
-
-
-        // Muat ulang daftar
-        // tindak lanjut
-
-        setTimeout(
-          function() {
-
-            bukaTindakLanjut();
-
-          },
-          1500
-        );
-
-
-      } else {
-
-        area.innerHTML =
-
-          "<div class='hasil'>" +
-
-          "❌ <b>Gagal menyimpan.</b>" +
-
-          "<br><br>" +
-
-          (
-            data &&
-            data.pesan
-              ? data.pesan
-              : "Terjadi kesalahan."
-          ) +
-
-          "</div>";
-
-      }
-
-
-      delete window[callbackName];
-
-
-      const script =
-        document.getElementById(
-          "simpanTindakLanjutApi"
-        );
-
-
-      if (script) {
-
-        script.remove();
-
-      }
-
-    };
-
-
-  const script =
-    document.createElement("script");
-
-
-  script.id =
-    "simpanTindakLanjutApi";
-
-
-  script.src =
-
-    GAS_URL +
-
-    "?aksi=simpanTindakLanjut" +
-
-    "&idSiswa=" +
-    encodeURIComponent(
-      idSiswa
-    ) +
-
-    "&idPetugas=" +
-    encodeURIComponent(
-      petugas.idPetugas
-    ) +
-
-    "&catatan=" +
-    encodeURIComponent(
-      catatan
-    ) +
-
-    "&callback=" +
-    callbackName;
-
-
-  document.body.appendChild(
-    script
-  );
-
-}
 
 </script>
+
 
 </body>
 
