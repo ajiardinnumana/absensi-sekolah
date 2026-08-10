@@ -1440,6 +1440,174 @@
 
   }
 
+    // =====================================================
+// SIMPAN TINDAK LANJUT DARI HALAMAN WEB
+// =====================================================
+
+function tindaklanjutiSiswa(idSiswa) {
+
+  if (!petugas) {
+
+    alert(
+      "Petugas belum login."
+    );
+
+    return;
+
+  }
+
+
+  const catatan =
+    prompt(
+      "Catatan tindak lanjut (opsional):"
+    );
+
+
+  if (catatan === null) {
+
+    return;
+
+  }
+
+
+  const area =
+    document.getElementById(
+      "tindakLanjutArea"
+    );
+
+
+  area.innerHTML =
+    "<p>⏳ Menyimpan tindak lanjut...</p>";
+
+
+  const callbackName =
+    "simpanTindakLanjutCallback" +
+    Date.now();
+
+
+  window[callbackName] =
+    function(data) {
+
+      if (
+        data &&
+        data.berhasil === true
+      ) {
+
+        area.innerHTML =
+
+          "<div class='info'>" +
+
+          "✅ <b>Tindak lanjut berhasil disimpan.</b>" +
+
+          "<br><br>" +
+
+          "ID Siswa: " +
+          data.idSiswa +
+
+          "<br>" +
+
+          "Petugas: " +
+          data.idPetugas +
+
+          "<br>" +
+
+          "Waktu: " +
+          data.waktu +
+
+          "</div>";
+
+
+        // Muat ulang daftar
+        // tindak lanjut
+
+        setTimeout(
+          function() {
+
+            bukaTindakLanjut();
+
+          },
+          1500
+        );
+
+
+      } else {
+
+        area.innerHTML =
+
+          "<div class='hasil'>" +
+
+          "❌ <b>Gagal menyimpan.</b>" +
+
+          "<br><br>" +
+
+          (
+            data &&
+            data.pesan
+              ? data.pesan
+              : "Terjadi kesalahan."
+          ) +
+
+          "</div>";
+
+      }
+
+
+      delete window[callbackName];
+
+
+      const script =
+        document.getElementById(
+          "simpanTindakLanjutApi"
+        );
+
+
+      if (script) {
+
+        script.remove();
+
+      }
+
+    };
+
+
+  const script =
+    document.createElement("script");
+
+
+  script.id =
+    "simpanTindakLanjutApi";
+
+
+  script.src =
+
+    GAS_URL +
+
+    "?aksi=simpanTindakLanjut" +
+
+    "&idSiswa=" +
+    encodeURIComponent(
+      idSiswa
+    ) +
+
+    "&idPetugas=" +
+    encodeURIComponent(
+      petugas.idPetugas
+    ) +
+
+    "&catatan=" +
+    encodeURIComponent(
+      catatan
+    ) +
+
+    "&callback=" +
+    callbackName;
+
+
+  document.body.appendChild(
+    script
+  );
+
+}
 
 </script>
 
