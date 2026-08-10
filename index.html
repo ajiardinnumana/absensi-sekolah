@@ -1312,59 +1312,67 @@
           data.data.forEach(
             function(item) {
 
-              html +=
+             html += `
+  <div class="tindak-card">
 
-                "<div class='tindak-card'>" +
+    <strong>
+      ${item.idSiswa} - ${item.nama}
+    </strong>
 
-                "<b>" +
+    <br><br>
 
-                item.idSiswa +
+    Kelas:
+    ${item.tingkat || ""} -
+    ${item.jurusan || ""} -
+    ${item.kelas || ""}
 
-                " - " +
+    <br>
 
-                item.nama +
+    ALPA:
+    <strong>
+      ${item.jumlahAlpa || 0} kali
+    </strong>
 
-                "</b>" +
+    <br>
 
-                "<br>" +
+    Terlambat:
+    <strong>
+      ${item.jumlahTerlambat || 0} kali
+    </strong>
 
-                "Kelas: " +
+    <br>
 
-                item.kelas +
+    Sakit:
+    ${item.jumlahSakit || 0} kali
 
-                "<br>" +
+    <br>
 
-                "Terlambat: " +
+    Izin:
+    ${item.jumlahIzin || 0} kali
 
-                item.jumlahTerlambat +
+    <br>
 
-                " kali" +
+    Tanggal terakhir:
+    ${item.tanggal || "-"}
 
-                "<br>" +
+    <br>
 
-                "Tanggal: " +
+    Status terakhir:
+    <strong>
+      ${item.status || "-"}
+    </strong>
 
-                item.tanggal +
+    <br><br>
 
-                "<br>" +
+    <button
+      type="button"
+      onclick="tindaklanjutiSiswa('${item.idSiswa}')"
+    >
+      ✓ SUDAH DITINDAKLANJUTI
+    </button>
 
-                "Status: <b>" +
-
-                item.status +
-
-                "</b>" +
-
-                "<br><br>" +
-
-                (
-                  item.catatan ||
-                  ""
-                ) +
-
-                "</div>";
-
-            }
-          );
+  </div>
+`;
 
 
           area.innerHTML =
