@@ -9,7 +9,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Absensi Murid SMKN 1 Wakatobi</title>
+  <title>Absensi Sekolah</title>
 
   <!-- Library QR Scanner -->
   <script src="https://unpkg.com/html5-qrcode"></script>
@@ -126,6 +126,45 @@
     .tindak-button {
       margin-top: 12px;
     }
+
+    .libur-area {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 10px;
+    }
+
+    .libur-status {
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background: #f1f1f1;
+    }
+
+    .libur-status.libur {
+      background: #ffebee;
+      border: 1px solid #ef9a9a;
+    }
+
+    .libur-status.sekolah {
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+    }
+
+    .libur-button {
+      background: #ffcc80;
+    }
+
+    .libur-simpan {
+      background: #ef6c00;
+      color: white;
+    }
+
+    .libur-batal {
+      background: #eeeeee;
+    }
   </style>
 
 </head>
@@ -145,7 +184,7 @@
     class="login-area"
   >
 
-    <h2>🏫 Absensi Murid SMKN 1 Wakatobi</h2>
+    <h2>🏫 Absensi Sekolah</h2>
 
     <p>Login Guru Piket</p>
 
@@ -189,6 +228,13 @@
       class="info"
     ></div>
 
+    <div
+      id="statusHariIni"
+      class="info"
+    >
+      Memeriksa status hari...
+    </div>
+
 
     <!-- Menu -->
 
@@ -217,6 +263,19 @@
       >
         ⚠️ TINDAK LANJUT
       </button>
+
+      <button
+        type="button"
+        class="libur-button"
+        onclick="bukaPengaturanLibur()"
+      >
+        📅 HARI LIBUR / SEKOLAH
+      </button>
+
+      <div
+        id="liburArea"
+        class="libur-area"
+      ></div>
 
       <div id="tindakLanjutArea"></div>
 
@@ -391,246 +450,220 @@
 
   function loginPetugas() {
 
-  const input =
-    document.getElementById("noHp");
+    const input =
+      document.getElementById("noHp");
 
-  const hasil =
-    document.getElementById("loginHasil");
+    const hasil =
+      document.getElementById("loginHasil");
 
-  const noHp =
-    input.value.trim();
+    const noHp =
+      input.value.trim();
 
 
-  if (!noHp) {
-
-    hasil.innerHTML =
-      "⚠️ Masukkan nomor HP.";
-
-    return;
-
-  }
-
-
-  hasil.innerHTML =
-    "⏳ Memeriksa akun...";
-
-
-  const callbackName =
-    "loginCallback" + Date.now();
-
-  const scriptId =
-    "loginApi";
-
-
-  // ==========================================
-  // HAPUS SCRIPT LOGIN LAMA
-  // ==========================================
-
-  const scriptLama =
-    document.getElementById(scriptId);
-
-  if (scriptLama) {
-    scriptLama.remove();
-  }
-
-
-  // ==========================================
-  // CALLBACK
-  // ==========================================
-
-  window[callbackName] =
-    function(data) {
-
-      console.log(
-        "Respons login:",
-        data
-      );
-
-
-      if (
-        data &&
-        data.berhasil === true
-      ) {
-
-        petugas = {
-
-          idPetugas:
-            data.idPetugas,
-
-          nama:
-            data.nama
-
-        };
-
-
-        // ====================================
-        // SEMBUNYIKAN LOGIN
-        // ====================================
-
-        document
-          .getElementById("loginArea")
-          .style.display =
-            "none";
-
-
-        // ====================================
-        // TAMPILKAN SCANNER
-        // ====================================
-
-        document
-          .getElementById("scannerArea")
-          .style.display =
-            "block";
-
-
-        // ====================================
-        // INFORMASI PETUGAS
-        // ====================================
-
-        document
-          .getElementById("petugasInfo")
-          .innerHTML =
-
-            "<b>Petugas:</b> " +
-            data.nama +
-
-            "<br>" +
-
-            "<b>ID:</b> " +
-            data.idPetugas;
-
-
-        // ====================================
-        // MULAI SCANNER
-        // ====================================
-
-        mulaiScanner();
-
-
-      } else {
-
-        hasil.innerHTML =
-
-          "❌ " +
-
-          (
-            data &&
-            data.pesan
-              ? data.pesan
-              : "Login gagal."
-          );
-
-      }
-
-
-      bersihkanCallback(
-        scriptId,
-        callbackName
-      );
-
-    };
-
-
-  // ==========================================
-  // BUAT SCRIPT JSONP
-  // ==========================================
-
-  const script =
-    document.createElement("script");
-
-
-  script.id =
-    scriptId;
-
-
-  script.src =
-
-    GAS_URL +
-
-    "?aksi=login" +
-
-    "&noHp=" +
-    encodeURIComponent(noHp) +
-
-    "&callback=" +
-    encodeURIComponent(callbackName);
-
-
-  // ==========================================
-  // JIKA REQUEST GAGAL
-  // ==========================================
-
-  script.onerror =
-    function() {
-
-      console.error(
-        "Gagal menghubungi server Apps Script."
-      );
-
+    if (!noHp) {
 
       hasil.innerHTML =
+        "⚠️ Masukkan nomor HP.";
 
-        "❌ Tidak dapat menghubungi server." +
+      return;
 
-        "<br><br>" +
-
-        "Periksa koneksi internet atau " +
-        "akses Web App Apps Script.";
+    }
 
 
-      bersihkanCallback(
-        scriptId,
-        callbackName
-      );
-
-    };
+    hasil.innerHTML =
+      "Memeriksa akun...";
 
 
-  // ==========================================
-  // TIMEOUT
-  // ==========================================
+    const callbackName =
+      "loginCallback" + Date.now();
 
-  const timeout =
-    setTimeout(
-      function() {
+
+    window[callbackName] =
+      function(data) {
 
         if (
-          document.getElementById(scriptId)
+          data &&
+          data.berhasil === true
         ) {
 
-          console.error(
-            "Login timeout."
-          );
+          petugas = {
 
+            idPetugas:
+              data.idPetugas,
+
+            nama:
+              data.nama
+
+          };
+
+
+          // Sembunyikan login
+
+          document
+            .getElementById("loginArea")
+            .style.display =
+              "none";
+
+
+          // Tampilkan scanner
+
+          document
+            .getElementById("scannerArea")
+            .style.display =
+              "block";
+
+
+          // Informasi petugas
+
+          document
+            .getElementById("petugasInfo")
+            .innerHTML =
+
+              "<b>Petugas:</b> " +
+              data.nama +
+
+              "<br>" +
+
+              "<b>ID:</b> " +
+              data.idPetugas;
+
+
+          // Tampilkan status hari ini
+          cekStatusHariIni();
+
+          // Mulai scanner
+          mulaiScanner();
+
+
+        } else {
 
           hasil.innerHTML =
 
-            "❌ Server tidak memberikan respons." +
+            "❌ " +
 
-            "<br><br>" +
-
-            "Silakan coba lagi.";
-
-          bersihkanCallback(
-            scriptId,
-            callbackName
-          );
+            (
+              data &&
+              data.pesan
+                ? data.pesan
+                : "Login gagal."
+            );
 
         }
 
-      },
-      15000
-    );
+
+        bersihkanCallback(
+          "loginApi",
+          callbackName
+        );
+
+      };
 
 
-  // ==========================================
-  // TAMBAHKAN SCRIPT
-  // ==========================================
+    const script =
+      document.createElement("script");
 
-  document.body.appendChild(script);
 
-}
+    script.id =
+      "loginApi";
 
+
+    script.src =
+
+      GAS_URL +
+
+      "?aksi=login" +
+
+      "&noHp=" +
+      encodeURIComponent(noHp) +
+
+      "&callback=" +
+      callbackName;
+
+
+    document.body.appendChild(script);
+
+  }
+
+
+
+  // =====================================================
+  // STATUS HARI INI
+  // =====================================================
+
+  function cekStatusHariIni() {
+    const area =
+      document.getElementById("statusHariIni");
+
+    if (!area) {
+      return;
+    }
+
+    const tanggal =
+      tanggalHariIniLocal();
+
+    area.innerHTML =
+      "⏳ Memeriksa status hari ini...";
+
+    const callbackName =
+      "statusHariIniCallback" + Date.now();
+
+    window[callbackName] = function(data) {
+      if (!data || data.berhasil !== true) {
+        area.innerHTML =
+          "⚠️ Status hari belum dapat diperiksa.";
+        bersihkanCallback(
+          "statusHariIniApi",
+          callbackName
+        );
+        return;
+      }
+
+      const hari =
+        data.hari || "";
+
+      const isLibur =
+        data.libur === true ||
+        String(data.status || "").toUpperCase() === "LIBUR";
+
+      if (isLibur) {
+        area.innerHTML =
+          "🔴 <b>HARI LIBUR</b>" +
+          "<br>" +
+          escapeHtmlLibur(hari) +
+          "<br>" +
+          escapeHtmlLibur(
+            data.keterangan || "Hari libur"
+          );
+      } else {
+        area.innerHTML =
+          "🟢 <b>HARI SEKOLAH</b>" +
+          "<br>" +
+          escapeHtmlLibur(hari) +
+          "<br>" +
+          "Absensi berjalan normal.";
+      }
+
+      bersihkanCallback(
+        "statusHariIniApi",
+        callbackName
+      );
+    };
+
+    const script =
+      document.createElement("script");
+
+    script.id = "statusHariIniApi";
+
+    script.src =
+      GAS_URL +
+      "?aksi=cekLibur" +
+      "&tanggal=" +
+      encodeURIComponent(tanggal) +
+      "&callback=" +
+      callbackName;
+
+    document.body.appendChild(script);
+  }
 
   // =====================================================
   // CARI SISWA MANUAL
@@ -1754,6 +1787,256 @@
   }
 
 
+
+  // =====================================================
+  // PENGATURAN HARI LIBUR
+  // =====================================================
+
+  function tanggalHariIniLocal() {
+    const sekarang = new Date();
+    const tahun = sekarang.getFullYear();
+    const bulan = String(sekarang.getMonth() + 1).padStart(2, "0");
+    const tanggal = String(sekarang.getDate()).padStart(2, "0");
+    return tahun + "-" + bulan + "-" + tanggal;
+  }
+
+  function escapeHtmlLibur(teks) {
+    return String(teks == null ? "" : teks)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function bukaPengaturanLibur() {
+    if (!petugas) {
+      alert("Silakan login terlebih dahulu.");
+      return;
+    }
+
+    const area = document.getElementById("liburArea");
+
+    area.style.display = "block";
+
+    area.innerHTML =
+      "<h3>📅 Pengaturan Hari</h3>" +
+      "<p>Sabtu tetap dihitung sebagai hari sekolah. Hanya Minggu yang otomatis hari libur.</p>" +
+
+      "<label><b>Tanggal</b></label>" +
+      "<input type='date' id='tanggalLibur' value='" +
+      tanggalHariIniLocal() +
+      "' onchange='cekStatusLibur()'>" +
+
+      "<div id='statusLibur' class='libur-status'>" +
+      "Memeriksa status tanggal..." +
+      "</div>" +
+
+      "<label><b>Keterangan</b></label>" +
+      "<textarea id='keteranganLibur' placeholder='Contoh: HUT Kemerdekaan RI, kegiatan sekolah, libur khusus, dll.'></textarea>" +
+
+      "<button type='button' class='libur-simpan' onclick='simpanHariLibur()'>" +
+      "🔴 JADIKAN HARI LIBUR" +
+      "</button>" +
+
+      "<button type='button' class='libur-batal' onclick='tutupPengaturanLibur()'>" +
+      "✕ TUTUP" +
+      "</button>";
+
+    cekStatusLibur();
+  }
+
+  function tutupPengaturanLibur() {
+    const area = document.getElementById("liburArea");
+    area.innerHTML = "";
+    area.style.display = "none";
+  }
+
+  function cekStatusLibur() {
+    const tanggal =
+      document.getElementById("tanggalLibur") &&
+      document.getElementById("tanggalLibur").value;
+
+    const status =
+      document.getElementById("statusLibur");
+
+    if (!tanggal || !status) {
+      return;
+    }
+
+    status.className = "libur-status";
+    status.innerHTML = "⏳ Memeriksa status hari...";
+
+    const callbackName =
+      "cekLiburCallback" + Date.now();
+
+    window[callbackName] = function(data) {
+      if (!data || data.berhasil !== true) {
+        status.className = "libur-status";
+        status.innerHTML =
+          "❌ " +
+          (
+            data && data.pesan
+              ? escapeHtmlLibur(data.pesan)
+              : "Status hari belum dapat diperiksa."
+          );
+
+        bersihkanCallback(
+          "cekLiburApi",
+          callbackName
+        );
+        return;
+      }
+
+      const hari =
+        data.hari ||
+        "";
+
+      const isLibur =
+        data.libur === true ||
+        String(data.status || "").toUpperCase() === "LIBUR";
+
+      const keterangan =
+        data.keterangan ||
+        "";
+
+      document.getElementById("keteranganLibur").value =
+        keterangan;
+
+      if (isLibur) {
+        status.className = "libur-status libur";
+
+        status.innerHTML =
+          "🔴 <b>LIBUR</b>" +
+          "<br>" +
+          escapeHtmlLibur(hari) +
+          "<br>" +
+          "Keterangan: " +
+          escapeHtmlLibur(keterangan || "-");
+      } else {
+        status.className = "libur-status sekolah";
+
+        status.innerHTML =
+          "🟢 <b>HARI SEKOLAH</b>" +
+          "<br>" +
+          escapeHtmlLibur(hari) +
+          "<br>" +
+          "Tanggal ini masih dianggap hari sekolah.";
+      }
+
+      bersihkanCallback(
+        "cekLiburApi",
+        callbackName
+      );
+    };
+
+    const script = document.createElement("script");
+
+    script.id = "cekLiburApi";
+
+    script.src =
+      GAS_URL +
+      "?aksi=cekLibur" +
+      "&tanggal=" +
+      encodeURIComponent(tanggal) +
+      "&callback=" +
+      callbackName;
+
+    document.body.appendChild(script);
+  }
+
+  function simpanHariLibur() {
+    if (!petugas) {
+      alert("Petugas belum login.");
+      return;
+    }
+
+    const tanggal =
+      document.getElementById("tanggalLibur").value;
+
+    const keterangan =
+      document.getElementById("keteranganLibur").value.trim();
+
+    const status =
+      document.getElementById("statusLibur");
+
+    if (!tanggal) {
+      status.className = "libur-status";
+      status.innerHTML =
+        "⚠️ Pilih tanggal terlebih dahulu.";
+      return;
+    }
+
+    if (!keterangan) {
+      status.className = "libur-status";
+      status.innerHTML =
+        "⚠️ Keterangan hari libur wajib diisi.";
+      return;
+    }
+
+    status.className = "libur-status";
+    status.innerHTML =
+      "⏳ Menyimpan pengaturan hari libur...";
+
+    const callbackName =
+      "simpanLiburCallback" + Date.now();
+
+    window[callbackName] = function(data) {
+      if (data && data.berhasil === true) {
+        status.className = "libur-status libur";
+
+        status.innerHTML =
+          "✅ <b>Hari berhasil ditetapkan sebagai LIBUR.</b>" +
+          "<br><br>" +
+          "Tanggal: " +
+          escapeHtmlLibur(data.tanggal || tanggal) +
+          "<br>" +
+          "Keterangan: " +
+          escapeHtmlLibur(
+            data.keterangan || keterangan
+          );
+
+      } else {
+        status.className = "libur-status";
+
+        status.innerHTML =
+          "❌ <b>Gagal menyimpan.</b>" +
+          "<br><br>" +
+          (
+            data && data.pesan
+              ? escapeHtmlLibur(data.pesan)
+              : "Terjadi kesalahan."
+          );
+      }
+
+      bersihkanCallback(
+        "simpanLiburApi",
+        callbackName
+      );
+    };
+
+    const script =
+      document.createElement("script");
+
+    script.id = "simpanLiburApi";
+
+    script.src =
+      GAS_URL +
+      "?aksi=simpanLibur" +
+      "&tanggal=" +
+      encodeURIComponent(tanggal) +
+      "&keterangan=" +
+      encodeURIComponent(keterangan) +
+      "&idPetugas=" +
+      encodeURIComponent(
+        petugas.idPetugas
+      ) +
+      "&callback=" +
+      callbackName;
+
+    document.body.appendChild(script);
+  }
+
   // =====================================================
   // KEMBALI KE SCANNER
   // =====================================================
@@ -1781,6 +2064,7 @@
     mulaiScanner();
 
   }
+
 
 </script>
 
