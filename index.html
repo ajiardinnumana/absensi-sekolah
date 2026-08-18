@@ -157,6 +157,16 @@
       background: #ffcc80;
     }
 
+    .dashboard-button {
+      background: #1976d2;
+      color: white;
+      font-weight: bold;
+    }
+
+    .dashboard-button:hover {
+      background: #125ca3;
+    }
+
     .libur-simpan {
       background: #ef6c00;
       color: white;
@@ -262,6 +272,14 @@
         onclick="bukaTindakLanjut()"
       >
         ⚠️ TINDAK LANJUT
+      </button>
+
+      <button
+        type="button"
+        class="dashboard-button"
+        onclick="bukaDashboard()"
+      >
+        📊 DASHBOARD
       </button>
 
       <button
@@ -1786,6 +1804,23 @@
 
   }
 
+
+
+  // =====================================================
+  // BUKA DASHBOARD
+  // =====================================================
+
+  function bukaDashboard() {
+    /*
+     * Dashboard disajikan oleh Web App Google Apps Script.
+     * Parameter halaman dipakai oleh doGet(e) di Code.gs.
+     */
+    const url =
+      GAS_URL +
+      "?halaman=dashboard";
+
+    window.open(url, "_blank");
+  }
 
 
   // =====================================================
