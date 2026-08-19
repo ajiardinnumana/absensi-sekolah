@@ -557,9 +557,7 @@ body{
     display: block !important;
   }
 
-  html.scanner-mode #manualArea {
-    display: none !important;
-  }
+  /* Manual view is controlled by JavaScript. */
 
   html.scanner-mode body {
     padding: 10px;
@@ -1458,6 +1456,42 @@ html.scanner-mode #menuDrawer .menu-exit-button{
   html:not(.scanner-mode) #loginArea input,
   html:not(.scanner-mode) #loginArea button{
     height:44px !important;
+  }
+}
+</style>
+
+
+<style id="MANUAL_MODE_LAYOUT_FIX">
+/* Absen manual mengambil alih tampilan scanner saat menu dipilih. */
+html.scanner-mode.manual-mode #scannerArea{
+  display:none !important;
+}
+
+html.scanner-mode.manual-mode #manualArea{
+  display:block !important;
+  width:100% !important;
+  min-height:calc(100dvh - 24px);
+}
+
+@media(max-width:700px){
+  html.scanner-mode.manual-mode #manualArea{
+    min-height:100dvh !important;
+    padding:14px !important;
+    overflow-x:hidden !important;
+  }
+
+  html.scanner-mode.manual-mode #manualArea input,
+  html.scanner-mode.manual-mode #manualArea textarea,
+  html.scanner-mode.manual-mode #manualArea button{
+    width:100% !important;
+    min-height:50px !important;
+    font-size:15px !important;
+    box-sizing:border-box !important;
+  }
+
+  html.scanner-mode.manual-mode #hasilPencarianManual{
+    width:100% !important;
+    overflow-x:hidden !important;
   }
 }
 </style>
@@ -2773,6 +2807,8 @@ if (!petugas) {
 
   function tampilkanManual() {
 
+    document.documentElement.classList.add("manual-mode");
+
     if (scannerAktif) {
 
       scannerAktif
@@ -3658,6 +3694,8 @@ if (!petugas) {
   // =====================================================
 
   function kembaliKeScanner() {
+
+    document.documentElement.classList.remove("manual-mode");
 
     document
       .getElementById("manualArea")
