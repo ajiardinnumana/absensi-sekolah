@@ -1812,6 +1812,124 @@ html.scanner-mode #menuDrawer button{
 }
 </style>
 
+
+<style id="MENU_PETUGAS_COLOR_CARDS">
+/* =========================================================
+   MENU PETUGAS — KARTU WARNA-WARNI
+   Tidak mengubah fungsi tombol maupun scanner.
+   Tombol STOP SCANNER sengaja tidak dibuat.
+   ========================================================= */
+
+#menuDrawer{
+  background:#ffffff !important;
+  border:1px solid #e2e8f0 !important;
+  box-shadow:0 16px 35px rgba(15,23,42,.14) !important;
+}
+
+#menuDrawer > button,
+#menuDrawer > .dashboard-harian-menu{
+  border:0 !important;
+  border-radius:12px !important;
+  margin:5px 0 !important;
+  min-height:44px !important;
+  box-shadow:0 2px 5px rgba(15,23,42,.08) !important;
+  transition:transform .15s ease, filter .15s ease !important;
+}
+
+#menuDrawer > button:hover,
+#menuDrawer > .dashboard-harian-menu:hover{
+  filter:brightness(.97) !important;
+  transform:translateY(-1px) !important;
+}
+
+/* 1. Scan Absen — biru */
+#menuDrawer > button:nth-child(2){
+  background:linear-gradient(135deg,#dbeafe,#bfdbfe) !important;
+  color:#1e3a8a !important;
+  border-left:5px solid #2563eb !important;
+}
+
+/* 2. Absen Manual — hijau */
+#menuDrawer > button:nth-child(3){
+  background:linear-gradient(135deg,#dcfce7,#bbf7d0) !important;
+  color:#166534 !important;
+  border-left:5px solid #16a34a !important;
+}
+
+/* 3. Tindak Lanjut — oranye */
+#menuDrawer > button:nth-child(4){
+  background:linear-gradient(135deg,#ffedd5,#fed7aa) !important;
+  color:#9a3412 !important;
+  border-left:5px solid #f97316 !important;
+}
+
+/* 4. Dashboard — ungu */
+#menuDrawer > button:nth-child(5){
+  background:linear-gradient(135deg,#ede9fe,#ddd6fe) !important;
+  color:#5b21b6 !important;
+  border-left:5px solid #7c3aed !important;
+}
+
+/* 5. Dashboard Harian — cyan */
+#menuDrawer > .dashboard-harian-menu{
+  background:linear-gradient(135deg,#cffafe,#a5f3fc) !important;
+  color:#155e75 !important;
+  border-left:5px solid #0891b2 !important;
+  padding:8px !important;
+}
+
+#menuDrawer > .dashboard-harian-menu .dashboard-harian-title{
+  color:#155e75 !important;
+  font-weight:800 !important;
+}
+
+#menuDrawer > .dashboard-harian-menu .dashboard-harian-select{
+  background:#ffffff !important;
+  border:1px solid #67e8f9 !important;
+  color:#164e63 !important;
+  border-radius:9px !important;
+}
+
+/* 6. Hari Libur / Sekolah — kuning */
+#menuDrawer > button:nth-child(7){
+  background:linear-gradient(135deg,#fef3c7,#fde68a) !important;
+  color:#854d0e !important;
+  border-left:5px solid #eab308 !important;
+}
+
+/* Ikon tetap jelas dan tidak ikut mengecil */
+#menuDrawer > button{
+  font-weight:800 !important;
+  text-align:left !important;
+}
+
+/* Judul menu */
+#menuDrawer .menu-hint{
+  color:#94a3b8 !important;
+  font-weight:800 !important;
+  letter-spacing:.08em !important;
+}
+
+/* HP: tetap kompak */
+@media (max-width:700px){
+  #menuDrawer > button,
+  #menuDrawer > .dashboard-harian-menu{
+    min-height:40px !important;
+    margin:4px 0 !important;
+    border-radius:10px !important;
+  }
+
+  #menuDrawer > button{
+    padding:7px 8px !important;
+    font-size:11.5px !important;
+  }
+
+  #menuDrawer > .dashboard-harian-menu{
+    padding:6px !important;
+  }
+}
+</style>
+
 </head>
 
 
