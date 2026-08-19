@@ -546,6 +546,50 @@ body{
 
 </style>
 
+
+<style>
+  /* Scanner tab: login is never displayed in the new tab */
+  html.scanner-mode #loginArea {
+    display: none !important;
+  }
+
+  html.scanner-mode #scannerArea {
+    display: block !important;
+  }
+
+  html.scanner-mode #manualArea {
+    display: none !important;
+  }
+
+  html.scanner-mode body {
+    padding: 10px;
+    min-height: 100dvh;
+  }
+
+  html.scanner-mode .container {
+    max-width: 760px;
+    min-height: calc(100dvh - 20px);
+  }
+</style>
+<script>
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("mode") === "scanner") {
+      document.documentElement.classList.add("scanner-mode");
+    }
+  })();
+</script>
+
+
+<script>
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("mode") === "scanner") {
+      document.title = "Scanner Absensi — SMK Negeri 1 Wakatobi";
+    }
+  })();
+</script>
+
 </head>
 
 
@@ -1014,6 +1058,11 @@ body{
       return false;
     }
 
+    // Tab ini khusus scanner. Jangan pernah menampilkan halaman login di sini.
+    document.documentElement.classList.add("scanner-mode");
+    document.getElementById("loginArea").style.display = "none";
+    document.getElementById("scannerArea").style.display = "block";
+
     const session = ambilSessionPetugas();
 
     if (!session) {
@@ -1027,6 +1076,11 @@ body{
   function tungguLoginDiTabScanner() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("menungguLogin") !== "1") return;
+
+    // Tetap murni halaman scanner; login berada di tab asal.
+    document.documentElement.classList.add("scanner-mode");
+    document.getElementById("loginArea").style.display = "none";
+    document.getElementById("scannerArea").style.display = "block";
 
     const timer = setInterval(function() {
       const session = ambilSessionPetugas();
