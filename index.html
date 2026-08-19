@@ -1496,6 +1496,134 @@ html.scanner-mode.manual-mode #manualArea{
 }
 </style>
 
+
+<style id="FINAL_UI_REVISION_2026">
+/* Menu hamburger lebih ramping di HP */
+@media (max-width:700px){
+  html.scanner-mode .menu-drawer{
+    width:min(300px, calc(100vw - 20px)) !important;
+    max-width:300px !important;
+    margin-left:auto !important;
+    margin-right:0 !important;
+    padding:7px !important;
+    box-sizing:border-box !important;
+  }
+
+  html.scanner-mode .menu-drawer button{
+    min-height:44px !important;
+    padding:9px 11px !important;
+    font-size:13px !important;
+  }
+
+  html.scanner-mode .menu-hint{
+    padding:5px 8px 7px !important;
+    font-size:9px !important;
+  }
+
+  .dashboard-harian-menu{
+    width:100%;
+    margin:5px 0;
+    padding:8px;
+    border:1px solid #e5eaf1;
+    border-radius:11px;
+    background:#f8fafc;
+  }
+
+  .dashboard-harian-title{
+    font-size:13px;
+    font-weight:800;
+    margin-bottom:6px;
+    color:#334155;
+  }
+
+  .dashboard-harian-select{
+    width:100%;
+    min-height:42px;
+    padding:0 10px;
+    border:1px solid #d8e0ea;
+    border-radius:9px;
+    background:#fff;
+    color:#334155;
+    font-size:13px;
+    font-weight:700;
+  }
+
+  /* Scanner viewport lebih besar */
+  html.scanner-mode #reader{
+    width:100% !important;
+    height:min(62vh, 560px) !important;
+    min-height:380px !important;
+    max-height:560px !important;
+    margin:8px 0 10px !important;
+    overflow:hidden !important;
+    border-radius:18px !important;
+  }
+
+  html.scanner-mode #reader video{
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    object-fit:cover !important;
+  }
+
+  .scanner-logout-button{
+    display:block !important;
+    width:100% !important;
+    min-height:48px !important;
+    margin:10px 0 4px !important;
+    border:1px solid #fecdd3 !important;
+    border-radius:11px !important;
+    background:#fff1f2 !important;
+    color:#b91c1c !important;
+    font-size:14px !important;
+    font-weight:800 !important;
+    box-sizing:border-box !important;
+  }
+}
+
+/* Desktop */
+.dashboard-harian-menu{
+  width:100%;
+  margin:5px 0;
+  padding:8px;
+  border:1px solid #e5eaf1;
+  border-radius:11px;
+  background:#f8fafc;
+}
+
+.dashboard-harian-title{
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:6px;
+  color:#334155;
+}
+
+.dashboard-harian-select{
+  width:100%;
+  min-height:42px;
+  padding:0 10px;
+  border:1px solid #d8e0ea;
+  border-radius:9px;
+  background:#fff;
+  color:#334155;
+  font-size:13px;
+  font-weight:700;
+}
+
+.scanner-logout-button{
+  display:block;
+  width:100%;
+  min-height:48px;
+  margin:10px 0 4px;
+  border:1px solid #fecdd3;
+  border-radius:11px;
+  background:#fff1f2;
+  color:#b91c1c;
+  font-size:14px;
+  font-weight:800;
+}
+</style>
+
 </head>
 
 
@@ -1625,13 +1753,20 @@ html.scanner-mode.manual-mode #manualArea{
           📊 &nbsp; DASHBOARD
         </button>
 
-        <button
-          type="button"
-          class="dashboard-harian-button"
-          onclick="bukaDashboardHarian(); closeMenu();"
-        >
-          📅 &nbsp; DASHBOARD HARIAN
-        </button>
+        <div class="dashboard-harian-menu">
+          <div class="dashboard-harian-title">
+            📅 &nbsp; DASHBOARD HARIAN
+          </div>
+
+          <select
+            id="modeDashboardHarian"
+            class="dashboard-harian-select"
+            onchange="bukaDashboardHarian(this.value);"
+          >
+            <option value="pagi">🌅 Pagi</option>
+            <option value="siang">☀️ Siang</option>
+          </select>
+        </div>
 
         <button
           type="button"
@@ -1640,15 +1775,6 @@ html.scanner-mode.manual-mode #manualArea{
         >
           🗓️ &nbsp; HARI LIBUR / SEKOLAH
         </button>
-
-        <button
-          type="button"
-          class="menu-exit-button"
-          onclick="keluarAplikasi();"
-        >
-          🚪 &nbsp; KELUAR
-        </button>
-
 
         <div
           id="liburArea"
@@ -1674,6 +1800,14 @@ html.scanner-mode.manual-mode #manualArea{
     >
       Siap melakukan scan.
     </div>
+
+    <button
+      type="button"
+      class="scanner-logout-button"
+      onclick="keluarAplikasi();"
+    >
+      🚪 &nbsp; KELUAR
+    </button>
 
   </div>
 
@@ -2066,125 +2200,58 @@ html.scanner-mode.manual-mode #manualArea{
 
   function loginPetugas() {
 
-    // Buka TAB SCANNER langsung saat klik MASUK masih berlangsung.
-    // Ini membuat popup tidak menunggu callback Google Apps Script.
-    const scannerUrl =
-      window.location.href.split("#")[0].split("?")[0] +
-      "?mode=scanner&menungguLogin=1";
-
-    if (!scannerTab || scannerTab.closed) {
-      scannerTab = window.open(scannerUrl, "_blank");
-    }
-
-    const input =
-      document.getElementById("noHp");
-
-    const hasil =
-      document.getElementById("loginHasil");
-
-    const noHp =
-      input.value.trim();
-
+    const input = document.getElementById("noHp");
+    const hasil = document.getElementById("loginHasil");
+    const noHp = input.value.trim();
 
     if (!noHp) {
-      if (scannerTab && !scannerTab.closed) {
-        scannerTab.close();
-        scannerTab = null;
-      }
-      hasil.innerHTML =
-        "⚠️ Masukkan nomor HP.";
+      hasil.innerHTML = "⚠️ Masukkan nomor HP.";
       return;
     }
 
+    hasil.innerHTML = "Memeriksa akun...";
 
-    hasil.innerHTML =
-      "Memeriksa akun...";
+    const callbackName = "loginCallback" + Date.now();
 
+    window[callbackName] = function(data) {
 
-    const callbackName =
-      "loginCallback" + Date.now();
+      if (data && data.berhasil === true) {
 
+        simpanSessionPetugas(data);
 
-    window[callbackName] =
-      function(data) {
+        // Login dan scanner sekarang berada di halaman yang sama.
+        tampilkanScannerDenganPetugas(data);
 
-        if (
-          data &&
-          data.berhasil === true
-        ) {
+        hasil.innerHTML = "✅ Login berhasil.";
 
-          simpanSessionPetugas(data);
+      } else {
 
-          // Tab scanner sudah dibuka saat tombol MASUK diklik.
-          // Setelah login berhasil, arahkan ulang dan fokus ke tab tersebut.
-          if (scannerTab && !scannerTab.closed) {
-            scannerTab.location.href =
-              window.location.href.split("#")[0].split("?")[0] +
-              "?mode=scanner";
-            scannerTab.focus();
-          } else {
-            // Fallback jika browser memblokir pop-up.
-            tampilkanScannerDenganPetugas(data);
-          }
+        hasil.innerHTML =
+          "❌ " +
+          (
+            data && data.pesan
+              ? data.pesan
+              : "Login gagal."
+          );
+      }
 
-          hasil.innerHTML =
-            "✅ Login berhasil. Membuka scanner di tab baru...";
+      bersihkanCallback("loginApi", callbackName);
+    };
 
+    const script = document.createElement("script");
 
-        } else {
-
-          if (scannerTab && !scannerTab.closed) {
-            scannerTab.close();
-            scannerTab = null;
-          }
-
-          hasil.innerHTML =
-
-            "❌ " +
-
-            (
-              data &&
-              data.pesan
-                ? data.pesan
-                : "Login gagal."
-            );
-
-        }
-
-
-        bersihkanCallback(
-          "loginApi",
-          callbackName
-        );
-
-      };
-
-
-    const script =
-      document.createElement("script");
-
-
-    script.id =
-      "loginApi";
-
+    script.id = "loginApi";
 
     script.src =
-
       GAS_URL +
-
       "?aksi=login" +
-
       "&noHp=" +
       encodeURIComponent(noHp) +
-
       "&callback=" +
       callbackName;
 
-
     document.body.appendChild(script);
-
   }
-
 
 
   // =====================================================
@@ -3428,13 +3495,20 @@ if (!petugas) {
     window.open(url, "_blank");
   }
 
-  function bukaDashboardHarian() {
+  function bukaDashboardHarian(mode) {
     /*
-     * Dashboard harian disajikan oleh Web App Google Apps Script.
+     * mode: pagi / siang
+     * DashboardHarian dapat membaca parameter mode dari URL.
      */
+    mode = mode === "siang" ? "siang" : "pagi";
+
     const url =
       GAS_URL +
-      "?halaman=dashboardHarian";
+      "?halaman=dashboardHarian" +
+      "&mode=" +
+      encodeURIComponent(mode);
+
+    closeMenu();
 
     window.open(url, "_blank");
   }
