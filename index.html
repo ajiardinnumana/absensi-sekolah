@@ -2003,6 +2003,13 @@ html.scanner-mode.manual-mode #manualArea{
     }
 
     // Jika di tab utama, kembali ke halaman login.
+    document.documentElement.classList.remove("scanner-mode");
+    document.documentElement.classList.remove("manual-mode");
+
+    document.getElementById("scannerArea").style.display = "none";
+    document.getElementById("manualArea").style.display = "none";
+    document.getElementById("loginArea").style.display = "";
+
     window.location.reload();
   }
 
@@ -2124,6 +2131,11 @@ html.scanner-mode.manual-mode #manualArea{
       idPetugas: data.idPetugas,
       nama: data.nama
     };
+
+    // Login sekarang berganti menjadi scanner pada halaman yang sama.
+    // Class ini wajib dipasang agar CSS scanner/mobile ikut aktif.
+    document.documentElement.classList.add("scanner-mode");
+    document.documentElement.classList.remove("manual-mode");
 
     document.getElementById("loginArea").style.display = "none";
     document.getElementById("scannerArea").style.display = "block";
