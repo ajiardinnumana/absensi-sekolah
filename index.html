@@ -1624,6 +1624,62 @@ html.scanner-mode.manual-mode #manualArea{
 }
 </style>
 
+
+<style id="HAMBURGER_WIDTH_FINAL">
+/* FINAL: hamburger drawer benar-benar dibatasi agar tidak melebar di HP */
+@media (max-width:700px){
+  #menuDrawer,
+  html.scanner-mode #menuDrawer,
+  .menu-drawer{
+    position:absolute !important;
+    top:56px !important;
+    right:8px !important;
+    left:auto !important;
+    width:270px !important;
+    max-width:calc(100vw - 16px) !important;
+    min-width:0 !important;
+    box-sizing:border-box !important;
+    overflow-x:hidden !important;
+    border-radius:14px !important;
+    padding:7px !important;
+  }
+
+  #menuDrawer > *,
+  html.scanner-mode #menuDrawer > *{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  #menuDrawer button,
+  #menuDrawer .dashboard-harian-menu,
+  #menuDrawer .dashboard-harian-select{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  #menuDrawer button{
+    white-space:normal !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+
+  .dashboard-harian-menu{
+    padding:6px !important;
+  }
+
+  .dashboard-harian-title{
+    font-size:12px !important;
+  }
+
+  .dashboard-harian-select{
+    min-height:40px !important;
+    font-size:12px !important;
+  }
+}
+</style>
+
 </head>
 
 
