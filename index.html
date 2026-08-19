@@ -192,6 +192,18 @@
 .menu-dashboard-harian:hover {
   opacity: 0.9;
 }
+
+
+    .dashboard-harian-button {
+      background: #e8f0fe;
+      color: #174ea6;
+      font-weight: 700;
+      border: 1px solid #c6dafc;
+    }
+
+    .dashboard-harian-button:hover {
+      background: #dbe8fd;
+    }
 </style>
 
 </head>
@@ -301,6 +313,14 @@
 
       <button
         type="button"
+        class="dashboard-harian-button"
+        onclick="bukaDashboardHarian()"
+      >
+        📅 DASHBOARD HARIAN
+      </button>
+
+      <button
+        type="button"
         class="libur-button"
         onclick="bukaPengaturanLibur()"
       >
@@ -311,8 +331,7 @@
         id="liburArea"
         class="libur-area"
       >
-  <a href="?halaman=dashboardHarian" class="menu-dashboard-harian">📊 Dashboard Harian</a>
-  </div>
+</div>
 
       <div id="tindakLanjutArea"></div>
 
@@ -1837,6 +1856,17 @@
     const url =
       GAS_URL +
       "?halaman=dashboard";
+
+    window.open(url, "_blank");
+  }
+
+  function bukaDashboardHarian() {
+    /*
+     * Dashboard harian disajikan oleh Web App Google Apps Script.
+     */
+    const url =
+      GAS_URL +
+      "?halaman=dashboardHarian";
 
     window.open(url, "_blank");
   }
