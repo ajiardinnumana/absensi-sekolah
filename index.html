@@ -1930,6 +1930,15 @@ html.scanner-mode #menuDrawer button{
 }
 </style>
 
+<style id="DASHBOARD_HARIAN_SINGLE_MENU">
+.dashboard-harian-single{
+  display:block !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  text-align:left !important;
+  cursor:pointer !important;
+}
+</style>
 </head>
 
 
@@ -2059,20 +2068,13 @@ html.scanner-mode #menuDrawer button{
           📊 &nbsp; DASHBOARD
         </button>
 
-        <div class="dashboard-harian-menu">
-          <div class="dashboard-harian-title">
-            📅 &nbsp; DASHBOARD HARIAN
-          </div>
-
-          <select
-            id="modeDashboardHarian"
-            class="dashboard-harian-select"
-            onchange="bukaDashboardHarian(this.value);"
-          >
-            <option value="pagi">🌅 Pagi</option>
-            <option value="siang">☀️ Siang</option>
-          </select>
-        </div>
+        <button
+          type="button"
+          class="dashboard-harian-menu dashboard-harian-single"
+          onclick="bukaDashboardHarian();"
+        >
+          📅 &nbsp; DASHBOARD HARIAN
+        </button>
 
         <button
           type="button"
@@ -3813,23 +3815,18 @@ if (!petugas) {
     window.open(url, "_blank");
   }
 
-  function bukaDashboardHarian(mode) {
-    /*
-     * mode: pagi / siang
-     * DashboardHarian dapat membaca parameter mode dari URL.
-     */
-    mode = mode === "siang" ? "siang" : "pagi";
+  function bukaDashboardHarian() {
+      /*
+       * Mode Pagi/Siang dipilih langsung di dalam
+       * Dashboard Harian, di samping pilihan tanggal.
+       */
+      const url =
+        GAS_URL +
+        "?halaman=dashboardHarian";
 
-    const url =
-      GAS_URL +
-      "?halaman=dashboardHarian" +
-      "&mode=" +
-      encodeURIComponent(mode);
-
-    closeMenu();
-
-    window.open(url, "_blank");
-  }
+      closeMenu();
+      window.open(url, "_blank");
+    }
 
 
   // =====================================================
