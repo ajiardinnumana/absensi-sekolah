@@ -1530,6 +1530,7 @@ html.scanner-mode .container {
   // =====================================================
 
   let scannerAktif = null;
+  let scannerSedangDibuat = false;
 
 
   // =====================================================
@@ -2134,7 +2135,14 @@ html.scanner-mode .container {
 
   function mulaiScanner() {
 
-    if (!petugas) {
+    
+    // Cegah dua instance Html5QrcodeScanner dibuat bersamaan.
+    if (scannerAktif || scannerSedangDibuat) {
+      return;
+    }
+    scannerSedangDibuat = true;
+
+if (!petugas) {
 
       alert(
         "Silakan login terlebih dahulu."
@@ -2212,7 +2220,7 @@ html.scanner-mode .container {
 
 
           scannerAktif = null;
-
+          scannerSedangDibuat = false;
 
           berhasilScan(kode);
 
@@ -2220,6 +2228,8 @@ html.scanner-mode .container {
 
 
         function(error) {
+
+          scannerSedangDibuat = false;
 
           // Error frame tidak ditampilkan
 
@@ -2229,6 +2239,8 @@ html.scanner-mode .container {
 
 
     } catch (error) {
+
+      scannerSedangDibuat = false;
 
       document
         .getElementById("hasil")
