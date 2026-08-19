@@ -234,8 +234,9 @@ body{
 }
 
 .login-area{
-  min-height:calc(100vh - 56px);
-  padding:38px 24px 34px;
+  min-height:0;
+  height:calc(100dvh - 28px);
+  padding:22px 24px;
   display:flex !important;
   flex-direction:column;
   align-items:center;
@@ -496,8 +497,9 @@ body{
     border-radius:18px;
   }
   .login-area{
-    min-height:calc(100vh - 20px);
-    padding:28px 17px;
+    min-height:0;
+    height:calc(100dvh - 12px);
+    padding:18px 15px;
   }
   .school-logo{
     width:102px;
@@ -1022,6 +1024,24 @@ body{
     return true;
   }
 
+  function tungguLoginDiTabScanner() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("menungguLogin") !== "1") return;
+
+    const timer = setInterval(function() {
+      const session = ambilSessionPetugas();
+      if (!session) return;
+
+      clearInterval(timer);
+      history.replaceState({}, "", window.location.pathname + "?mode=scanner");
+      tampilkanScannerDenganPetugas(session);
+    }, 400);
+
+    setTimeout(function() {
+      clearInterval(timer);
+    }, 30000);
+  }
+
 
   // =====================================================
   // LOGIN PETUGAS
@@ -1029,9 +1049,14 @@ body{
 
   function loginPetugas() {
 
-    // Buka tab kosong saat event klik masih berlangsung agar popup tidak diblokir.
+    // Buka TAB SCANNER langsung saat klik MASUK masih berlangsung.
+    // Ini membuat popup tidak menunggu callback Google Apps Script.
+    const scannerUrl =
+      window.location.href.split("#")[0].split("?")[0] +
+      "?mode=scanner&menungguLogin=1";
+
     if (!scannerTab || scannerTab.closed) {
-      scannerTab = window.open("about:blank", "_blank");
+      scannerTab = window.open(scannerUrl, "_blank");
     }
 
     const input =
@@ -1045,12 +1070,13 @@ body{
 
 
     if (!noHp) {
-
+      if (scannerTab && !scannerTab.closed) {
+        scannerTab.close();
+        scannerTab = null;
+      }
       hasil.innerHTML =
         "⚠️ Masukkan nomor HP.";
-
       return;
-
     }
 
 
@@ -1072,15 +1098,15 @@ body{
 
           simpanSessionPetugas(data);
 
-          // Buka scanner di tab baru setelah login berhasil.
-          // Tab login tetap dibiarkan terbuka sebagai halaman awal.
+          // Tab scanner sudah dibuka saat tombol MASUK diklik.
+          // Setelah login berhasil, arahkan ulang dan fokus ke tab tersebut.
           if (scannerTab && !scannerTab.closed) {
             scannerTab.location.href =
               window.location.href.split("#")[0].split("?")[0] +
               "?mode=scanner";
             scannerTab.focus();
           } else {
-            // Fallback jika popup diblokir.
+            // Fallback jika browser memblokir pop-up.
             tampilkanScannerDenganPetugas(data);
           }
 
@@ -1150,6 +1176,7 @@ body{
 
   document.addEventListener("DOMContentLoaded", function() {
     initModeScanner();
+    tungguLoginDiTabScanner();
   });
 
 
