@@ -590,6 +590,151 @@ body{
   })();
 </script>
 
+
+<style>
+/* ===== MOBILE SCANNER — LARGE & COMFORTABLE ===== */
+@media (max-width: 700px){
+  html, body{
+    width:100%;
+    min-width:0;
+    overflow-x:hidden;
+  }
+
+  body{
+    padding:0 !important;
+    font-size:16px !important;
+  }
+
+  .container{
+    width:100% !important;
+    max-width:none !important;
+    min-height:100dvh !important;
+    margin:0 !important;
+    border-radius:0 !important;
+    border:0 !important;
+    box-shadow:none !important;
+  }
+
+  /* Login */
+  #loginArea{
+    min-height:100dvh !important;
+    width:100% !important;
+    padding:22px 18px !important;
+    box-sizing:border-box !important;
+    justify-content:center !important;
+  }
+
+  #loginArea .school-logo,
+  .school-logo{
+    width:92px !important;
+    height:92px !important;
+    margin-bottom:12px !important;
+  }
+
+  #loginArea h2{
+    font-size:23px !important;
+    line-height:1.25 !important;
+  }
+
+  #loginArea input{
+    width:100% !important;
+    max-width:none !important;
+    height:54px !important;
+    box-sizing:border-box !important;
+    font-size:17px !important;
+  }
+
+  #loginArea button{
+    width:100% !important;
+    max-width:none !important;
+    height:54px !important;
+    font-size:16px !important;
+  }
+
+  /* Scanner */
+  #scannerArea{
+    width:100% !important;
+    min-height:100dvh !important;
+    box-sizing:border-box !important;
+    padding:12px !important;
+  }
+
+  #scannerArea h2{
+    font-size:21px !important;
+    margin:4px 0 10px !important;
+  }
+
+  #petugasInfo,
+  #statusHariIni,
+  #hasil{
+    font-size:14px !important;
+  }
+
+  #reader{
+    width:100% !important;
+    max-width:none !important;
+    min-height:330px !important;
+    margin:8px 0 !important;
+    border-width:4px !important;
+    border-radius:16px !important;
+  }
+
+  #reader video{
+    width:100% !important;
+    height:auto !important;
+    min-height:300px !important;
+    object-fit:cover !important;
+  }
+
+  .menu-toggle{
+    width:52px !important;
+    height:48px !important;
+    font-size:25px !important;
+  }
+
+  .menu-drawer{
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  .menu-drawer button{
+    width:100% !important;
+    min-height:50px !important;
+    font-size:15px !important;
+    margin:4px 0 !important;
+  }
+
+  /* Make manual view mobile-friendly too */
+  #manualArea{
+    min-height:100dvh !important;
+    box-sizing:border-box !important;
+    padding:16px !important;
+  }
+
+  #manualArea input,
+  #manualArea textarea,
+  #manualArea button{
+    width:100% !important;
+    box-sizing:border-box !important;
+    min-height:50px !important;
+    font-size:15px !important;
+  }
+}
+</style>
+
+
+<style>
+.menu-exit-button{
+  color:#b91c1c !important;
+  background:#fff7f7 !important;
+  border:1px solid #fecaca !important;
+}
+
+.menu-exit-button:hover{
+  background:#fee2e2 !important;
+}
+</style>
+
 </head>
 
 
@@ -734,6 +879,15 @@ body{
         >
           🗓️ &nbsp; HARI LIBUR / SEKOLAH
         </button>
+
+        <button
+          type="button"
+          class="menu-exit-button"
+          onclick="keluarAplikasi();"
+        >
+          🚪 &nbsp; KELUAR
+        </button>
+
 
         <div
           id="liburArea"
@@ -909,6 +1063,53 @@ body{
     }
   });
 
+
+
+  // =====================================================
+  // KELUAR APLIKASI
+  // =====================================================
+
+  function keluarAplikasi() {
+    closeMenu();
+
+    const yakin = confirm(
+      "Apakah Anda yakin ingin keluar dari aplikasi?"
+    );
+
+    if (!yakin) return;
+
+    try {
+      if (scannerAktif) {
+        scannerAktif.clear().catch(function(){});
+        scannerAktif = null;
+      }
+    } catch (e) {}
+
+    try {
+      sessionStorage.removeItem("absensiPetugas");
+      localStorage.removeItem("absensiPetugas");
+    } catch (e) {}
+
+    // Jika halaman ini adalah tab scanner, tutup tab tersebut.
+    const params = new URLSearchParams(window.location.search);
+
+    if (
+      params.get("mode") === "scanner" ||
+      params.get("menungguLogin") === "1"
+    ) {
+      window.close();
+
+      // Browser tertentu tidak mengizinkan window.close().
+      // Fallback: kembali ke halaman login tanpa menampilkan scanner.
+      setTimeout(function(){
+        window.location.href = window.location.pathname;
+      }, 300);
+      return;
+    }
+
+    // Jika di tab utama, kembali ke halaman login.
+    window.location.reload();
+  }
 
   // =====================================================
   // URL WEB APP GOOGLE APPS SCRIPT
