@@ -735,6 +735,153 @@ body{
 }
 </style>
 
+
+<style>
+/* =========================================================
+   FINAL LOGIN MOBILE FIX
+   Hilangkan bingkai memanjang dan paksa login fit 1 layar.
+   ========================================================= */
+
+html:not(.scanner-mode),
+html:not(.scanner-mode) body{
+  min-height:100%;
+  height:100%;
+}
+
+html:not(.scanner-mode) body{
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:#f5f8fc !important;
+}
+
+html:not(.scanner-mode) .container{
+  width:100% !important;
+  max-width:none !important;
+  min-height:100dvh !important;
+  height:100dvh !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  overflow:hidden !important;
+}
+
+html:not(.scanner-mode) #loginArea{
+  width:100% !important;
+  height:100dvh !important;
+  min-height:100dvh !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:18px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  border:0 !important;
+  border-radius:0 !important;
+}
+
+/* Login card dibuat sebagai satu panel pendek, bukan bingkai panjang */
+html:not(.scanner-mode) #loginArea .login-card,
+html:not(.scanner-mode) #loginArea form{
+  width:min(390px,100%) !important;
+  max-width:390px !important;
+  box-sizing:border-box !important;
+}
+
+/* Jika elemen login tidak punya class/form, batasi anak langsung */
+html:not(.scanner-mode) #loginArea > *{
+  max-width:390px;
+}
+
+/* Logo */
+html:not(.scanner-mode) #loginArea .school-logo,
+html:not(.scanner-mode) #loginArea img{
+  width:82px !important;
+  height:82px !important;
+  object-fit:contain !important;
+  margin:0 auto 9px !important;
+}
+
+/* Judul */
+html:not(.scanner-mode) #loginArea h2{
+  margin:0 0 5px !important;
+  font-size:21px !important;
+  line-height:1.2 !important;
+  text-align:center !important;
+}
+
+/* Paragraf/subjudul */
+html:not(.scanner-mode) #loginArea p{
+  margin:3px 0 10px !important;
+  font-size:12px !important;
+  text-align:center !important;
+}
+
+/* Input */
+html:not(.scanner-mode) #loginArea input{
+  width:100% !important;
+  height:48px !important;
+  min-height:48px !important;
+  margin:4px 0 !important;
+  box-sizing:border-box !important;
+  font-size:16px !important;
+}
+
+/* Tombol */
+html:not(.scanner-mode) #loginArea button{
+  width:100% !important;
+  height:48px !important;
+  min-height:48px !important;
+  margin:7px 0 0 !important;
+  box-sizing:border-box !important;
+  font-size:15px !important;
+}
+
+/* Pesan hasil jangan membuat halaman bertambah tinggi */
+html:not(.scanner-mode) #loginArea .hasil,
+html:not(.scanner-mode) #loginArea #hasil{
+  width:100% !important;
+  max-height:54px !important;
+  overflow:auto !important;
+  margin:7px 0 0 !important;
+  box-sizing:border-box !important;
+}
+
+/* Layar HP sangat pendek */
+@media (max-height:700px) and (max-width:700px){
+  html:not(.scanner-mode) #loginArea{
+    padding:10px 16px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea .school-logo,
+  html:not(.scanner-mode) #loginArea img{
+    width:66px !important;
+    height:66px !important;
+    margin-bottom:5px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea h2{
+    font-size:18px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea p{
+    margin:2px 0 6px !important;
+    font-size:11px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea input,
+  html:not(.scanner-mode) #loginArea button{
+    height:44px !important;
+    min-height:44px !important;
+  }
+}
+</style>
+
 </head>
 
 
