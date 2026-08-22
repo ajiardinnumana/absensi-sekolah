@@ -1930,37 +1930,68 @@ html.scanner-mode #menuDrawer button{
 }
 </style>
 
+<style id="DASHBOARD_HARIAN_SINGLE_MENU">
+.dashboard-harian-single{
+  display:block !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  text-align:left !important;
+  cursor:pointer !important;
+}
+</style>
 
-<style id="FINAL_MANUAL_TINDAK_OVERRIDE">
+<style id="FINAL_MANUAL_TINDAK_LATEST_FIX">
+/* =========================================================
+   FINAL FIX — ABSEN MANUAL + TINDAK LANJUT
+   Berbasis Index terakhir.
+   Tidak mengubah fungsi API/GAS.
+   ========================================================= */
+
 html.scanner-mode.manual-mode #scannerArea{
   display:none !important;
 }
+
 html.scanner-mode.manual-mode #manualArea{
   display:block !important;
   width:100% !important;
   min-height:calc(100dvh - 20px) !important;
   position:relative !important;
   z-index:30 !important;
+  box-sizing:border-box !important;
   overflow-x:hidden !important;
 }
-#manualArea input,#manualArea textarea,#manualArea button{
+
+html.scanner-mode.manual-mode #manualArea input,
+html.scanner-mode.manual-mode #manualArea textarea,
+html.scanner-mode.manual-mode #manualArea button{
   box-sizing:border-box !important;
 }
+
 #tindakLanjutArea{
-  display:block !important;
   width:100% !important;
+  max-width:100% !important;
   box-sizing:border-box !important;
   overflow-x:hidden !important;
 }
-.tindak-card{
+
+#tindakLanjutArea .tindak-card{
   width:100% !important;
+  max-width:100% !important;
   box-sizing:border-box !important;
   overflow-wrap:anywhere !important;
 }
+
+#tindakLanjutArea button{
+  max-width:100% !important;
+  box-sizing:border-box !important;
+}
+
 @media(max-width:700px){
   html.scanner-mode.manual-mode #manualArea{
+    min-height:100dvh !important;
     padding:14px !important;
   }
+
   html.scanner-mode.manual-mode #manualArea input,
   html.scanner-mode.manual-mode #manualArea textarea,
   html.scanner-mode.manual-mode #manualArea button{
@@ -1968,8 +1999,25 @@ html.scanner-mode.manual-mode #manualArea{
     min-height:50px !important;
     font-size:15px !important;
   }
+
+  html.scanner-mode.manual-mode #hasilPencarianManual{
+    width:100% !important;
+    overflow-x:hidden !important;
+  }
+
   #tindakLanjutArea{
-    padding-bottom:20px !important;
+    padding-bottom:18px !important;
+  }
+
+  #tindakLanjutArea .tindak-card{
+    padding:12px !important;
+    margin:10px 0 !important;
+  }
+
+  #tindakLanjutArea .tindak-button{
+    width:100% !important;
+    min-height:50px !important;
+    font-size:14px !important;
   }
 }
 </style>
@@ -2090,7 +2138,7 @@ html.scanner-mode.manual-mode #manualArea{
 
         <button
           type="button"
-          onclick="bukaTindakLanjut();"
+          onclick="bukaTindakLanjut(); closeMenu();"
         >
           ⚠️ &nbsp; TINDAK LANJUT
         </button>
@@ -2103,20 +2151,13 @@ html.scanner-mode.manual-mode #manualArea{
           📊 &nbsp; DASHBOARD
         </button>
 
-        <div class="dashboard-harian-menu">
-          <div class="dashboard-harian-title">
-            📅 &nbsp; DASHBOARD HARIAN
-          </div>
-
-          <select
-            id="modeDashboardHarian"
-            class="dashboard-harian-select"
-            onchange="bukaDashboardHarian(this.value);"
-          >
-            <option value="pagi">🌅 Pagi</option>
-            <option value="siang">☀️ Siang</option>
-          </select>
-        </div>
+        <button
+          type="button"
+          class="dashboard-harian-menu dashboard-harian-single"
+          onclick="bukaDashboardHarian();"
+        >
+          📅 &nbsp; DASHBOARD HARIAN
+        </button>
 
         <button
           type="button"
@@ -3268,11 +3309,6 @@ if (!petugas) {
       .style.display =
         "block";
 
-    setTimeout(function(){
-      const el = document.getElementById("manualCari");
-      if (el) el.focus();
-    }, 150);
-
 
     document
       .getElementById("manualPetugas")
@@ -3291,6 +3327,11 @@ if (!petugas) {
       .getElementById("manualHasil")
       .innerHTML =
         "";
+
+    setTimeout(function () {
+      const el = document.getElementById("manualCari");
+      if (el) el.focus();
+    }, 150);
 
   }
 
@@ -3862,23 +3903,18 @@ if (!petugas) {
     window.open(url, "_blank");
   }
 
-  function bukaDashboardHarian(mode) {
-    /*
-     * mode: pagi / siang
-     * DashboardHarian dapat membaca parameter mode dari URL.
-     */
-    mode = mode === "siang" ? "siang" : "pagi";
+  function bukaDashboardHarian() {
+      /*
+       * Mode Pagi/Siang dipilih langsung di dalam
+       * Dashboard Harian, di samping pilihan tanggal.
+       */
+      const url =
+        GAS_URL +
+        "?halaman=dashboardHarian";
 
-    const url =
-      GAS_URL +
-      "?halaman=dashboardHarian" +
-      "&mode=" +
-      encodeURIComponent(mode);
-
-    closeMenu();
-
-    window.open(url, "_blank");
-  }
+      closeMenu();
+      window.open(url, "_blank");
+    }
 
 
   // =====================================================
