@@ -2022,6 +2022,129 @@ html.scanner-mode.manual-mode #manualArea button{
 }
 </style>
 
+
+<style id="TINDAK_LANJUT_FULL_PAGE">
+/* TINDAK LANJUT tampil sebagai halaman penuh, bukan isi hamburger. */
+#tindakLanjutArea{
+  display:none;
+}
+
+html.scanner-mode.tindak-mode #scannerArea,
+html.scanner-mode.tindak-mode #manualArea{
+  display:none !important;
+}
+
+html.scanner-mode.tindak-mode #tindakLanjutArea{
+  display:block !important;
+  width:100% !important;
+  min-height:100dvh !important;
+  padding:18px !important;
+  box-sizing:border-box !important;
+  background:#f7f9fc !important;
+  position:relative !important;
+  z-index:50 !important;
+  overflow-x:hidden !important;
+}
+
+html.scanner-mode.tindak-mode #menuArea{
+  display:none !important;
+}
+
+.tindak-page-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.tindak-back{
+  width:auto !important;
+  min-width:92px;
+  min-height:44px !important;
+  margin:0 !important;
+  padding:10px 14px !important;
+  background:#fff !important;
+  color:#334155 !important;
+  border:1px solid #dbe3ed !important;
+  box-shadow:0 3px 10px rgba(15,23,42,.06);
+}
+
+.tindak-page-title{
+  flex:1;
+}
+
+.tindak-page-title h2{
+  margin:0 !important;
+  font-size:21px !important;
+  color:#172033;
+}
+
+.tindak-page-title p{
+  margin:3px 0 0 !important;
+  color:#64748b;
+  font-size:12px;
+}
+
+.tindak-empty{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:15px;
+  padding:22px;
+  text-align:center;
+  color:#64748b;
+  box-shadow:0 6px 18px rgba(15,23,42,.05);
+}
+
+html.scanner-mode.tindak-mode .tindak-card{
+  background:#fff !important;
+  border:1px solid #e2e8f0 !important;
+  border-left:5px solid #f97316 !important;
+  border-radius:15px !important;
+  padding:16px !important;
+  margin:12px 0 !important;
+  box-shadow:0 7px 20px rgba(15,23,42,.06) !important;
+}
+
+html.scanner-mode.tindak-mode .tindak-button{
+  width:100% !important;
+  min-height:48px !important;
+  background:linear-gradient(135deg,#f97316,#ea580c) !important;
+  color:#fff !important;
+  font-weight:800 !important;
+  border-radius:11px !important;
+}
+
+@media(max-width:700px){
+  html.scanner-mode.tindak-mode #tindakLanjutArea{
+    min-height:100dvh !important;
+    padding:12px !important;
+  }
+
+  .tindak-page-head{
+    align-items:flex-start;
+  }
+
+  .tindak-back{
+    min-width:82px;
+    min-height:44px !important;
+    font-size:13px !important;
+  }
+
+  .tindak-page-title h2{
+    font-size:19px !important;
+  }
+
+  .tindak-page-title p{
+    font-size:11px !important;
+  }
+
+  html.scanner-mode.tindak-mode .tindak-card{
+    padding:14px !important;
+    margin:10px 0 !important;
+  }
+}
+</style>
+
 </head>
 
 
@@ -2124,7 +2247,7 @@ html.scanner-mode.manual-mode #manualArea button{
 
         <button
           type="button"
-          onclick="mulaiScanner(); closeMenu();"
+          onclick="kembaliKeScanner();"
         >
           📷 &nbsp; SCAN ABSEN
         </button>
@@ -2138,7 +2261,7 @@ html.scanner-mode.manual-mode #manualArea button{
 
         <button
           type="button"
-          onclick="bukaTindakLanjut(); closeMenu();"
+          onclick="bukaTindakLanjut();"
         >
           ⚠️ &nbsp; TINDAK LANJUT
         </button>
@@ -2172,11 +2295,11 @@ html.scanner-mode.manual-mode #manualArea button{
           class="libur-area"
         ></div>
 
-        <div id="tindakLanjutArea"></div>
-
       </div>
     </div>
 
+    <!-- TINDAK LANJUT: halaman penuh, di luar hamburger -->
+    <div id="tindakLanjutArea"></div>
 
     <!-- Scanner -->
 
@@ -3277,6 +3400,14 @@ if (!petugas) {
 
   function tampilkanManual() {
 
+    document.documentElement.classList.remove("tindak-mode");
+
+    const tindakArea = document.getElementById("tindakLanjutArea");
+    if (tindakArea) {
+      tindakArea.style.display = "none";
+      tindakArea.innerHTML = "";
+    }
+
     document.documentElement.classList.add("manual-mode");
 
     if (scannerAktif) {
@@ -3530,204 +3661,188 @@ if (!petugas) {
   function bukaTindakLanjut() {
 
     if (!petugas) {
-
-      alert(
-        "Silakan login terlebih dahulu."
-      );
-
+      alert("Silakan login terlebih dahulu.");
       return;
-
     }
 
+    closeMenu();
 
-    const area =
-      document.getElementById(
-        "tindakLanjutArea"
-      );
+    document.documentElement.classList.add("tindak-mode");
+    document.documentElement.classList.remove("manual-mode");
 
+    const scannerArea = document.getElementById("scannerArea");
+    const manualArea = document.getElementById("manualArea");
+
+    if (scannerArea) scannerArea.style.display = "none";
+    if (manualArea) manualArea.style.display = "none";
+
+    const area = document.getElementById("tindakLanjutArea");
+
+    if (!area) {
+      alert("Area Tindak Lanjut tidak ditemukan.");
+      return;
+    }
+
+    area.style.display = "block";
 
     area.innerHTML =
-      "<div class='info'>" +
-      "Memuat data tindak lanjut..." +
-      "</div>";
+      "<div class='tindak-page-head'>" +
+        "<button type='button' class='tindak-back' " +
+          "onclick='kembaliKeScanner()'>← Kembali</button>" +
+        "<div class='tindak-page-title'>" +
+          "<h2>⚠️ Tindak Lanjut</h2>" +
+          "<p>Daftar siswa yang perlu ditindaklanjuti</p>" +
+        "</div>" +
+      "</div>" +
+      "<div class='info'>⏳ Memuat daftar siswa...</div>";
 
+    const callbackName = "tindakLanjutCallback" + Date.now();
 
-    const callbackName =
-      "tindakLanjutCallback" + Date.now();
+    window[callbackName] = function(data) {
 
+      if (!data || data.berhasil !== true) {
 
-    window[callbackName] =
-      function(data) {
-
-        if (
-          !data ||
-          data.berhasil !== true
-        ) {
-
-          area.innerHTML =
-
-            "<div class='info'>" +
-
+        area.innerHTML =
+          "<div class='tindak-page-head'>" +
+            "<button type='button' class='tindak-back' " +
+              "onclick='kembaliKeScanner()'>← Kembali</button>" +
+            "<div class='tindak-page-title'>" +
+              "<h2>⚠️ Tindak Lanjut</h2>" +
+              "<p>Daftar siswa yang perlu perhatian</p>" +
+            "</div>" +
+          "</div>" +
+          "<div class='info'>" +
             "❌ Gagal mengambil data tindak lanjut." +
-
             "<br><br>" +
+            (data && data.pesan ? data.pesan : "Tidak ada respons dari server.") +
+          "</div>";
 
-            (
-              data &&
-              data.pesan
-                ? data.pesan
-                : "Tidak ada respons dari server."
-            ) +
+        bersihkanCallback("tindakLanjutApi", callbackName);
+        return;
+      }
 
-            "</div>";
+      if (Number(data.jumlah) === 0) {
 
+        area.innerHTML =
+          "<div class='tindak-page-head'>" +
+            "<button type='button' class='tindak-back' " +
+              "onclick='kembaliKeScanner()'>← Kembali</button>" +
+            "<div class='tindak-page-title'>" +
+              "<h2>⚠️ Tindak Lanjut</h2>" +
+              "<p>Daftar siswa yang perlu perhatian</p>" +
+            "</div>" +
+          "</div>" +
+          "<div class='tindak-empty'>" +
+            "✅<br><br>" +
+            "<strong>Tidak ada siswa yang perlu ditindaklanjuti.</strong>" +
+            "<br><small>Semua siswa masih dalam kondisi aman.</small>" +
+          "</div>";
 
-          bersihkanCallback(
-            "tindakLanjutApi",
-            callbackName
-          );
+      } else {
 
-          return;
+        let html =
+          "<div class='tindak-page-head'>" +
+            "<button type='button' class='tindak-back' " +
+              "onclick='kembaliKeScanner()'>← Kembali</button>" +
+            "<div class='tindak-page-title'>" +
+              "<h2>⚠️ Tindak Lanjut</h2>" +
+              "<p>" + Number(data.jumlah) +
+              " siswa perlu ditindaklanjuti</p>" +
+            "</div>" +
+          "</div>";
 
-        }
+        if (Array.isArray(data.data)) {
+          data.data.forEach(function(item) {
 
-
-        if (
-          Number(data.jumlah) === 0
-        ) {
-
-          area.innerHTML =
-
-            "<div class='info'>" +
-
-            "✅ Tidak ada siswa yang perlu " +
-            "ditindaklanjuti." +
-
-            "</div>";
-
-        } else {
-
-          let html =
-
-            "<h3>⚠️ Perlu Tindak Lanjut</h3>";
-
-
-          if (
-            Array.isArray(data.data)
-          ) {
-
-            data.data.forEach(
-              function(item) {
-
-                html +=
-
-                  "<div class='tindak-card'>" +
-
-                  "<strong>" +
+            html +=
+              "<div class='tindak-card'>" +
+                "<strong>" +
                   (item.idSiswa || "") +
                   " - " +
                   (item.nama || "") +
-                  "</strong>" +
-
-                  "<br><br>" +
-
-                  "Kelas: " +
+                "</strong>" +
+                "<br><br>" +
+                "Kelas: " +
                   (item.tingkat || "") +
-                  " - " +
+                  (item.tingkat || item.jurusan ? " - " : "") +
                   (item.jurusan || "") +
-                  " - " +
-                  (item.kelas || "") +
-
-                  "<br>" +
-
-                  "ALPA: <strong>" +
+                  (item.kelas ? " - " + item.kelas : "") +
+                "<br><br>" +
+                "🔴 ALPA: <strong>" +
                   (item.jumlahAlpa || 0) +
-                  " kali</strong>" +
-
-                  "<br>" +
-
-                  "Terlambat: <strong>" +
+                " kali</strong>" +
+                "<br>" +
+                "🟠 Terlambat: <strong>" +
                   (item.jumlahTerlambat || 0) +
-                  " kali</strong>" +
-
-                  "<br>" +
-
-                  "Sakit: " +
-                  (item.jumlahSakit || 0) +
-                  " kali" +
-
-                  "<br>" +
-
-                  "Izin: " +
-                  (item.jumlahIzin || 0) +
-                  " kali" +
-
-                  "<br>" +
-
-                  "Tanggal terakhir: " +
-                  (item.tanggal || "-") +
-
-                  "<br>" +
-
-                  "Status terakhir: <strong>" +
-                  (item.status || "-") +
-                  "</strong>" +
-
-                  "<br><br>" +
-
-                  "<button " +
-                  "type='button' " +
-                  "class='tindak-button' " +
+                " kali</strong>" +
+                (item.jumlahSakit !== undefined
+                  ? "<br>🟡 Sakit: " + (item.jumlahSakit || 0) + " kali"
+                  : "") +
+                (item.jumlahIzin !== undefined
+                  ? "<br>🔵 Izin: " + (item.jumlahIzin || 0) + " kali"
+                  : "") +
+                (item.tanggal
+                  ? "<br><br>Tanggal terakhir: " + item.tanggal
+                  : "") +
+                (item.status
+                  ? "<br>Status: <strong>" + item.status + "</strong>"
+                  : "") +
+                "<br><br>" +
+                "<button type='button' class='tindak-button' " +
                   "onclick=\"tindaklanjutiSiswa('" +
-                  String(item.idSiswa || "")
-                    .replace(/\\/g, "\\\\")
-                    .replace(/'/g, "\\'") +
+                    String(item.idSiswa || "")
+                      .replace(/\\/g, "\\\\")
+                      .replace(/'/g, "\\'") +
                   "')\">" +
                   "✓ SUDAH DITINDAKLANJUTI" +
-                  "</button>" +
-
-                  "</div>";
-
-              }
-            );
-
-          }
-
-
-          area.innerHTML =
-            html;
-
+                "</button>" +
+              "</div>";
+          });
         }
 
+        area.innerHTML = html;
+      }
 
-        bersihkanCallback(
-          "tindakLanjutApi",
-          callbackName
-        );
+      bersihkanCallback("tindakLanjutApi", callbackName);
+    };
 
-      };
-
-
-    const script =
-      document.createElement("script");
-
-
-    script.id =
-      "tindakLanjutApi";
-
-
+    const script = document.createElement("script");
+    script.id = "tindakLanjutApi";
     script.src =
-
       GAS_URL +
-
       "?aksi=tindakLanjut" +
-
-      "&callback=" +
-      callbackName;
-
+      "&callback=" + callbackName;
 
     document.body.appendChild(script);
+  }
 
+  function kembaliKeScanner() {
+
+    const area = document.getElementById("tindakLanjutArea");
+
+    if (area) {
+      area.innerHTML = "";
+      area.style.display = "none";
+    }
+
+    document.documentElement.classList.remove("tindak-mode");
+    document.documentElement.classList.remove("manual-mode");
+
+    const manualArea = document.getElementById("manualArea");
+    if (manualArea) manualArea.style.display = "none";
+
+    const scannerArea = document.getElementById("scannerArea");
+    if (scannerArea) scannerArea.style.display = "block";
+
+    closeMenu();
+
+    if (typeof scannerAktif === "undefined" || !scannerAktif) {
+      setTimeout(function() {
+        if (typeof mulaiScanner === "function") {
+          mulaiScanner();
+        }
+      }, 150);
+    }
   }
 
 
