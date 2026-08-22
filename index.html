@@ -1681,166 +1681,295 @@ html.scanner-mode.manual-mode #manualArea{
 </style>
 
 
-<style id="PETUGAS_MENU_COLORFUL_FINAL">
-/* =========================================================
-   MENU PETUGAS — KARTU WARNA-WARNI
-   Tidak mengubah fungsi tombol.
-   ========================================================= */
+<style id="HAMBURGER_WIDTH_FINAL_2">
 @media (max-width:700px){
-
-  #menuDrawer .petugas-menu-item,
-  #menuDrawer .dashboard-harian-menu,
-  #menuDrawer .libur-button{
+  /* Override seluruh aturan lebar drawer sebelumnya */
+  #menuDrawer,
+  html.scanner-mode #menuDrawer,
+  .menu-drawer{
+    width:225px !important;
+    max-width:calc(100vw - 12px) !important;
+    min-width:0 !important;
+    right:6px !important;
+    left:auto !important;
+    padding:5px !important;
     border-radius:12px !important;
-    margin:6px 0 !important;
-    border:1px solid transparent !important;
-    box-shadow:0 2px 7px rgba(15,23,42,.06) !important;
-    transition:transform .15s ease, box-shadow .15s ease !important;
+    overflow-x:hidden !important;
   }
 
-  #menuDrawer .petugas-menu-item:active,
-  #menuDrawer .dashboard-harian-menu:active,
-  #menuDrawer .libur-button:active{
-    transform:scale(.98) !important;
+  #menuDrawer > *,
+  #menuDrawer button,
+  #menuDrawer .dashboard-harian-menu,
+  #menuDrawer .dashboard-harian-select{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
   }
 
-  /* Scan Absen — biru */
-  #menuDrawer .scan-absen-button,
-  #menuDrawer button[onclick*="mulaiScanner"]{
-    background:#eff6ff !important;
-    color:#1d4ed8 !important;
-    border-color:#bfdbfe !important;
+  #menuDrawer button{
+    min-height:40px !important;
+    padding:7px 9px !important;
+    font-size:11.5px !important;
+    line-height:1.15 !important;
   }
 
-  /* Absen Manual — ungu */
-  #menuDrawer .absen-manual-button,
-  #menuDrawer button[onclick*="tampilkanManual"]{
-    background:#f5f3ff !important;
-    color:#6d28d9 !important;
-    border-color:#ddd6fe !important;
-  }
-
-  /* Dashboard — hijau */
-  #menuDrawer .dashboard-button,
-  #menuDrawer button[onclick*="Dashboard"]{
-    background:#ecfdf5 !important;
-    color:#047857 !important;
-    border-color:#a7f3d0 !important;
-  }
-
-  /* Dashboard Harian — kuning/oranye */
   #menuDrawer .dashboard-harian-menu{
-    background:#fffbeb !important;
-    border-color:#fde68a !important;
+    padding:5px !important;
+    margin:4px 0 !important;
   }
 
   #menuDrawer .dashboard-harian-title{
-    color:#92400e !important;
+    font-size:11px !important;
+    margin-bottom:4px !important;
   }
 
   #menuDrawer .dashboard-harian-select{
-    background:#fff !important;
-    color:#92400e !important;
-    border-color:#fcd34d !important;
+    min-height:36px !important;
+    padding:0 7px !important;
+    font-size:11px !important;
   }
-
-  /* Hari Libur — merah muda */
-  #menuDrawer .libur-button,
-  #menuDrawer button[onclick*="bukaPengaturanLibur"]{
-    background:#fff1f2 !important;
-    color:#be123c !important;
-    border-color:#fecdd3 !important;
-  }
-
-  #menuDrawer .petugas-menu-item,
-  #menuDrawer button,
-  #menuDrawer .libur-button{
-    min-height:46px !important;
-    font-weight:800 !important;
-  }
-}
-
-/* Desktop juga diberi aksen warna, tetapi lebih lembut */
-#menuDrawer .scan-absen-button,
-#menuDrawer button[onclick*="mulaiScanner"]{
-  background:#eff6ff;
-  color:#1d4ed8;
-  border-color:#bfdbfe;
-}
-
-#menuDrawer .absen-manual-button,
-#menuDrawer button[onclick*="tampilkanManual"]{
-  background:#f5f3ff;
-  color:#6d28d9;
-  border-color:#ddd6fe;
-}
-
-#menuDrawer .dashboard-button,
-#menuDrawer button[onclick*="Dashboard"]{
-  background:#ecfdf5;
-  color:#047857;
-  border-color:#a7f3d0;
-}
-
-#menuDrawer .dashboard-harian-menu{
-  background:#fffbeb;
-  border-color:#fde68a;
-}
-
-#menuDrawer .libur-button,
-#menuDrawer button[onclick*="bukaPengaturanLibur"]{
-  background:#fff1f2;
-  color:#be123c;
-  border-color:#fecdd3;
 }
 </style>
 
 
-<style id="MANUAL_TINDAK_FINAL_FIX">
-html.scanner-mode.manual-mode #manualArea{
-  display:block !important;
-  position:relative !important;
-  z-index:20 !important;
+<style id="HAMBURGER_WIDTH_REAL_FIX">
+/*
+  FIX SEBENARNYA:
+  Screenshot laptop menunjukkan drawer melebar 100% karena ada
+  rule html.scanner-mode .menu-drawer { width:100% !important; }.
+  Rule ini harus dioverride untuk SEMUA ukuran layar, bukan hanya HP.
+*/
+
+html.scanner-mode .menu{
+  width:52px !important;
+  position:absolute !important;
+  right:16px !important;
+  top:16px !important;
+  z-index:1000 !important;
+}
+
+html.scanner-mode .menu-drawer,
+html.scanner-mode #menuDrawer{
+  position:absolute !important;
+  top:52px !important;
+  right:0 !important;
+  left:auto !important;
+  width:330px !important;
+  max-width:calc(100vw - 24px) !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+  padding:8px !important;
+  overflow-x:hidden !important;
+  border-radius:15px !important;
+}
+
+html.scanner-mode .menu-drawer > *,
+html.scanner-mode #menuDrawer > *{
   width:100% !important;
   max-width:100% !important;
-}
-
-html.scanner-mode.manual-mode #scannerArea{
-  display:none !important;
-}
-
-#tindakLanjutArea{
-  width:100%;
-  max-width:100%;
-  box-sizing:border-box;
-  overflow:hidden;
-}
-
-.tindak-card{
-  width:100%;
-  box-sizing:border-box;
-  margin:8px 0;
-  padding:12px;
-  border-radius:12px;
-  background:#fff7ed;
-  border:1px solid #fed7aa;
-  overflow-wrap:anywhere;
-}
-
-.pilihan-siswa{
-  width:100% !important;
-  min-height:48px !important;
-  margin:5px 0 !important;
-  padding:8px 10px !important;
-  text-align:left !important;
-  border-radius:10px !important;
+  min-width:0 !important;
   box-sizing:border-box !important;
 }
 
+html.scanner-mode .menu-drawer button,
+html.scanner-mode #menuDrawer button{
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+}
+
+/* Desktop: menu tetap ringkas */
+@media (min-width:701px){
+  html.scanner-mode .menu-drawer,
+  html.scanner-mode #menuDrawer{
+    width:330px !important;
+    max-width:330px !important;
+  }
+}
+
+/* HP: lebih kecil lagi */
+@media (max-width:700px){
+  html.scanner-mode .menu{
+    right:8px !important;
+    top:8px !important;
+  }
+
+  html.scanner-mode .menu-drawer,
+  html.scanner-mode #menuDrawer{
+    top:52px !important;
+    right:0 !important;
+    width:225px !important;
+    max-width:calc(100vw - 12px) !important;
+    padding:5px !important;
+  }
+
+  html.scanner-mode .menu-drawer button,
+  html.scanner-mode #menuDrawer button{
+    min-height:40px !important;
+    padding:7px 9px !important;
+    font-size:11.5px !important;
+  }
+}
+</style>
+
+
+<style id="MENU_PETUGAS_COLOR_CARDS">
+/* =========================================================
+   MENU PETUGAS — KARTU WARNA-WARNI
+   Tidak mengubah fungsi tombol maupun scanner.
+   Tombol STOP SCANNER sengaja tidak dibuat.
+   ========================================================= */
+
+#menuDrawer{
+  background:#ffffff !important;
+  border:1px solid #e2e8f0 !important;
+  box-shadow:0 16px 35px rgba(15,23,42,.14) !important;
+}
+
+#menuDrawer > button,
+#menuDrawer > .dashboard-harian-menu{
+  border:0 !important;
+  border-radius:12px !important;
+  margin:5px 0 !important;
+  min-height:44px !important;
+  box-shadow:0 2px 5px rgba(15,23,42,.08) !important;
+  transition:transform .15s ease, filter .15s ease !important;
+}
+
+#menuDrawer > button:hover,
+#menuDrawer > .dashboard-harian-menu:hover{
+  filter:brightness(.97) !important;
+  transform:translateY(-1px) !important;
+}
+
+/* 1. Scan Absen — biru */
+#menuDrawer > button:nth-child(2){
+  background:linear-gradient(135deg,#dbeafe,#bfdbfe) !important;
+  color:#1e3a8a !important;
+  border-left:5px solid #2563eb !important;
+}
+
+/* 2. Absen Manual — hijau */
+#menuDrawer > button:nth-child(3){
+  background:linear-gradient(135deg,#dcfce7,#bbf7d0) !important;
+  color:#166534 !important;
+  border-left:5px solid #16a34a !important;
+}
+
+/* 3. Tindak Lanjut — oranye */
+#menuDrawer > button:nth-child(4){
+  background:linear-gradient(135deg,#ffedd5,#fed7aa) !important;
+  color:#9a3412 !important;
+  border-left:5px solid #f97316 !important;
+}
+
+/* 4. Dashboard — ungu */
+#menuDrawer > button:nth-child(5){
+  background:linear-gradient(135deg,#ede9fe,#ddd6fe) !important;
+  color:#5b21b6 !important;
+  border-left:5px solid #7c3aed !important;
+}
+
+/* 5. Dashboard Harian — cyan */
+#menuDrawer > .dashboard-harian-menu{
+  background:linear-gradient(135deg,#cffafe,#a5f3fc) !important;
+  color:#155e75 !important;
+  border-left:5px solid #0891b2 !important;
+  padding:8px !important;
+}
+
+#menuDrawer > .dashboard-harian-menu .dashboard-harian-title{
+  color:#155e75 !important;
+  font-weight:800 !important;
+}
+
+#menuDrawer > .dashboard-harian-menu .dashboard-harian-select{
+  background:#ffffff !important;
+  border:1px solid #67e8f9 !important;
+  color:#164e63 !important;
+  border-radius:9px !important;
+}
+
+/* 6. Hari Libur / Sekolah — kuning */
+#menuDrawer > button:nth-child(7){
+  background:linear-gradient(135deg,#fef3c7,#fde68a) !important;
+  color:#854d0e !important;
+  border-left:5px solid #eab308 !important;
+}
+
+/* Ikon tetap jelas dan tidak ikut mengecil */
+#menuDrawer > button{
+  font-weight:800 !important;
+  text-align:left !important;
+}
+
+/* Judul menu */
+#menuDrawer .menu-hint{
+  color:#94a3b8 !important;
+  font-weight:800 !important;
+  letter-spacing:.08em !important;
+}
+
+/* HP: tetap kompak */
+@media (max-width:700px){
+  #menuDrawer > button,
+  #menuDrawer > .dashboard-harian-menu{
+    min-height:40px !important;
+    margin:4px 0 !important;
+    border-radius:10px !important;
+  }
+
+  #menuDrawer > button{
+    padding:7px 8px !important;
+    font-size:11.5px !important;
+  }
+
+  #menuDrawer > .dashboard-harian-menu{
+    padding:6px !important;
+  }
+}
+</style>
+
+
+<style id="FINAL_MANUAL_TINDAK_OVERRIDE">
+html.scanner-mode.manual-mode #scannerArea{
+  display:none !important;
+}
+html.scanner-mode.manual-mode #manualArea{
+  display:block !important;
+  width:100% !important;
+  min-height:calc(100dvh - 20px) !important;
+  position:relative !important;
+  z-index:30 !important;
+  overflow-x:hidden !important;
+}
+#manualArea input,#manualArea textarea,#manualArea button{
+  box-sizing:border-box !important;
+}
+#tindakLanjutArea{
+  display:block !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  overflow-x:hidden !important;
+}
+.tindak-card{
+  width:100% !important;
+  box-sizing:border-box !important;
+  overflow-wrap:anywhere !important;
+}
 @media(max-width:700px){
   html.scanner-mode.manual-mode #manualArea{
-    padding:12px !important;
-    min-height:100dvh !important;
+    padding:14px !important;
+  }
+  html.scanner-mode.manual-mode #manualArea input,
+  html.scanner-mode.manual-mode #manualArea textarea,
+  html.scanner-mode.manual-mode #manualArea button{
+    width:100% !important;
+    min-height:50px !important;
+    font-size:15px !important;
+  }
+  #tindakLanjutArea{
+    padding-bottom:20px !important;
   }
 }
 </style>
@@ -3139,18 +3268,11 @@ if (!petugas) {
       .style.display =
         "block";
 
-    document
-      .getElementById("manualArea")
-      .scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+    setTimeout(function(){
+      const el = document.getElementById("manualCari");
+      if (el) el.focus();
+    }, 150);
 
-    setTimeout(function() {
-      const input =
-        document.getElementById("manualCari");
-      if (input) input.focus();
-    }, 100);
 
     document
       .getElementById("manualPetugas")
