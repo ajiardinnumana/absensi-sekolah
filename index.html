@@ -2034,7 +2034,8 @@ html.scanner-mode.tindak-mode #manualArea{
   display:none !important;
 }
 
-html.scanner-mode.tindak-mode #tindakLanjutArea{
+html.scanner-mode.tindak-mode #tindakLanjutArea,
+html.tindak-mode #tindakLanjutArea{
   display:block !important;
   width:100% !important;
   min-height:100dvh !important;
@@ -2298,9 +2299,6 @@ html.scanner-mode.tindak-mode .tindak-button{
       </div>
     </div>
 
-    <!-- TINDAK LANJUT: halaman penuh, di luar hamburger -->
-    <div id="tindakLanjutArea"></div>
-
     <!-- Scanner -->
 
     <div id="reader"></div>
@@ -2324,6 +2322,9 @@ html.scanner-mode.tindak-mode .tindak-button{
     </button>
 
   </div>
+
+  <!-- TINDAK LANJUT: halaman penuh, DI LUAR scannerArea -->
+  <div id="tindakLanjutArea"></div>
 
 
   <!-- ================================================= -->
@@ -4287,26 +4288,39 @@ if (!petugas) {
 
   function kembaliKeScanner() {
 
+    const tindakArea =
+      document.getElementById("tindakLanjutArea");
+
+    if (tindakArea) {
+      tindakArea.innerHTML = "";
+      tindakArea.style.display = "none";
+    }
+
+    document.documentElement.classList.remove("tindak-mode");
     document.documentElement.classList.remove("manual-mode");
 
-    document
-      .getElementById("manualArea")
-      .style.display =
-        "none";
+    const manualArea =
+      document.getElementById("manualArea");
 
+    if (manualArea) {
+      manualArea.style.display = "none";
+    }
 
-    document
-      .getElementById("scannerArea")
-      .style.display =
-        "block";
+    const scannerArea =
+      document.getElementById("scannerArea");
 
+    if (scannerArea) {
+      scannerArea.style.display = "block";
+    }
 
-    document
-      .getElementById("manualHasil")
-      .innerHTML =
-        "";
+    const manualHasil =
+      document.getElementById("manualHasil");
 
+    if (manualHasil) {
+      manualHasil.innerHTML = "";
+    }
 
+    closeMenu();
     mulaiScanner();
 
   }
